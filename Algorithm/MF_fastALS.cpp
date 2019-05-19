@@ -14,10 +14,17 @@
 #include <functional>
 #include <time.h>
 #include "DenseVec.h"
+#include "DenseMat.h"
+#include "SparseVec.h"
+#include "SparseMat.h"
+#include "Rating.h"
 
 using namespace Eigen;
 
 typedef Triplet<double> T_d;
+typedef SparseMatrix<double> SpMat;
+typedef Matrix<double, Dynamic, Dynamic> MatrixXd;
+
 
 MF_fastALS::MF_fastALS(SparseMat trainMatrix, std::vector<Rating> testRatings,
 	int topK, int threadNum, int factors, int maxIter, double w0, double alpha, double reg,
@@ -50,7 +57,7 @@ MF_fastALS::MF_fastALS(SparseMat trainMatrix, std::vector<Rating> testRatings,
 	double sum = 0, Z = 0;
 	double *p = new double[itemCount];
 	for (int i = 0; i < itemCount; i++) {
-		p[i] = trainMatrix.outerIndexPtr()[i + 1] - trainMatrix.outerIndexPtr()[i];
+		p[i] = trainMatrix.getColOutIndex(i + 1) - trainMatrix.getColOutIndex(i);
 		sum += p[i];
 	}
 
@@ -66,12 +73,14 @@ MF_fastALS::MF_fastALS(SparseMat trainMatrix, std::vector<Rating> testRatings,
 		Wi[i] = w0 * p[i] / Z;
 
 	// By default, the weight for positive instance is uniformly 1
-	W.resize(userCount, itemCount);
+	W.setSize(userCount, itemCount);
 	std::vector<T_d> tripletList;
 	for (int u = 0; u < userCount; u++)
-		for (int i = trainMatrix_R.outerIndexPtr()[u]; i < trainMatrix_R.outerIndexPtr()[u + 1]; i++)
-			tripletList.push_back(T_d(u, trainMatrix_R.innerIndexPtr()[i], 1));
-	W.setFromTriplets(tripletList.begin(), tripletList.end());
+		for (int i = trainMatrix.getRowOutIndex(u); i < trainMatrix_R.getRowOutIndex(u + 1); i++)
+			tripletList.push_back(T_d(u, trainMatrix_R.getRowInIndex(i), 1));
+	SpMat w_temp(userCount, itemCount);
+	w_temp.setFromTriplets(tripletList.begin(), tripletList.end());
+	W.setMatC(w_temp);
 
 	//Init model parameters
 	U = DenseMat(userCount, factors);
@@ -84,11 +93,15 @@ MF_fastALS::MF_fastALS(SparseMat trainMatrix, std::vector<Rating> testRatings,
 }
 
 void MF_fastALS::setTrain(SparseMat trainMatrix) {
-	this->trainMatrix = new SparseMat(trainMatrix);
-	W = new SparseMat(userCount, itemCount);
+	this->trainMatrix = trainMatrix;
+	W.setSize(userCount, itemCount);
+	std::vector<T_d> tripletList;
 	for (int u = 0; u < userCount; u++)
-		for (int i : this->trainMatrix.getRowRef(u).indexList())
-			W.setValue(u, i, 1);
+		for (int i = trainMatrix.getRowOutIndex(u); i < trainMatrix_R.getRowOutIndex(u + 1); i++)
+			tripletList.push_back(T_d(u, trainMatrix_R.getRowInIndex(i), 1));
+	SpMat w_temp(userCount, itemCount);
+	w_temp.setFromTriplets(tripletList.begin(), tripletList.end());
+	W.setMatC(w_temp);
 }
 
 void MF_fastALS::setUV(DenseMat U, DenseMat V) {
@@ -143,11 +156,11 @@ double MF_fastALS::loss() {
 	for (int u = 0; u < userCount; u++) {
 		double l = 0;
 		std::vector<int> itemList;
-		for (int i = trainMatrix_R.outerIndexPtr()[u]; i < trainMatrix_R.outerIndexPtr()[u + 1]; i++)
-			itemList.push_back(trainMatrix_R.innerIndexPtr()[i]);
+		for (int i = trainMatrix_R.getRowOutIndex(u); i < trainMatrix_R.getRowOutIndex(u+1); i++)
+			itemList.push_back(trainMatrix_R.getRowInIndex(i));
 		for (int i : itemList) {
 			double pred = predict(u, i);
-			l += W.coeffRef(u, i) * pow(trainMatrix_R.coeffRef(u, i) - pred, 2);
+			l += W.getValueC(u, i) * pow(trainMatrix.getValueR(u, i) - pred, 2);
 			l -= Wi[i] * pow(pred, 2);
 		}
 		l += U.row(u) * SV.getData * U.row(u).transpose();
@@ -158,7 +171,9 @@ double MF_fastALS::loss() {
 }
 
 double MF_fastALS::predict(int u, int i) {
-	return U.row(u) * V.row(i).transpose();
+	MatrixXd u_temp = U.getData();
+	MatrixXd v_temp = V.getData();
+	return u_temp.row(u) * v_temp.row(i).transpose();
 }
 
 void MF_fastALS::updateModel(int u, int i) {
@@ -184,15 +199,16 @@ void MF_fastALS::updateModel(int u, int i) {
 
 void MF_fastALS::update_user(int u) {
 	std::vector<int> itemList;
-	for (int i = trainMatrix_R.outerIndexPtr()[u]; i < trainMatrix_R.outerIndexPtr()[u + 1]; i++)
-		itemList.push_back(trainMatrix_R.innerIndexPtr()[i]);
+
+	for (int i = trainMatrix_R.getRowOutIndex(u); i < trainMatrix_R.getRowOutIndex(u + 1); i++)
+		itemList.push_back(trainMatrix_R.getRowInIndex(i));
 	if (itemList.size() == 0)        return;    // user has no ratings
 	// prediction cache for the user
 
 	for (int i : itemList) {
 		prediction_items[i] = predict(u, i);
-		rating_items[i] = trainMatrix_R.coeffRef(u, i);
-		w_items[i] = W.coeffRef(u, i);
+		rating_items[i] = trainMatrix.getValueR(u, i);
+		w_items[i] = W.getValueC(u, i);
 	}
 
 	DenseVec oldVector = U.row(u);
@@ -207,7 +223,7 @@ void MF_fastALS::update_user(int u) {
 		// O(Nu) complexity for the positive part
 		for (int i : itemList) {
 			prediction_items[i] -= U.get(u, f) * V.get(i, f);
-			numer += (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]) * V(i, f);
+			numer += (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]) * V.get(i, f);
 			denom += (w_items[i] - Wi[i]) * V.get(i, f) * V.get(i, f);
 		}
 		denom += SV.get(f, f) + reg;
@@ -233,14 +249,14 @@ void MF_fastALS::update_user(int u) {
 
 void MF_fastALS::update_item(int i) {
 	std::vector<int> userList;
-	for (int j = trainMatrix.outerIndexPtr()[i]; j < trainMatrix.outerIndexPtr()[i + 1]; j++)
-		userList.push_back(trainMatrix.innerIndexPtr()[j]);
+	for (int j = trainMatrix_R.getRowOutIndex(i); j < trainMatrix_R.getRowOutIndex(i + 1); j++)
+		userList.push_back(trainMatrix_R.getRowInIndex(j));
 	if (userList.size() == 0)        return; // item has no ratings.
 	// prediction cache for the item
 	for (int u : userList) {
 		prediction_users[u] = predict(u, i);
-		rating_users[u] = trainMatrix.coeffRef(u, i);
-		w_users[u] = W.coeffRef(u, i);
+		rating_users[u] = trainMatrix.getValueC(u, i);
+		w_users[u] = W.getValueC(u, i);
 	}
 
 
@@ -257,13 +273,13 @@ void MF_fastALS::update_item(int i) {
 		// O(Ni) complexity for the positive ratings part
 		for (int u : userList) {
 			prediction_users[u] -= U.get(u, f) * V.get(i, f);
-			numer += (w_users[u] * rating_users[u] - (w_users[u] - Wi[i]) * prediction_users[u]) * U(u, f);
+			numer += (w_users[u] * rating_users[u] - (w_users[u] - Wi[i]) * prediction_users[u]) * U.get(u, f);
 			denom += (w_users[u] - Wi[i]) * U.get(u, f) * U.get(u, f);
 		}
 		denom += Wi[i] * SU.get(f, f) + reg;
 
 		// Parameter update
-		V(i, f) = numer / denom;
+		V.set(i, f, numer / denom);
 		// Update the prediction cache for the item
 		for (int u : userList)
 			prediction_users[u] += U.get(u, f) * V.get(i, f);
