@@ -1,3 +1,6 @@
+#define EIGEN_USE_MKL_ALL
+#define EIGEN_VECTORIZE_SSE4_2
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -87,8 +90,10 @@ std::vector<std::vector<Rating>> ReadRatings_HoldOneOut(std::string dir) {
 	
 	float score;
 	long timestamp = 0;
+	int x = 0;
 
 	while (std::getline(fin, line)) {
+		//std::getline(fin, line);
 		std::istringstream word(line);
 		word >> user_id;
 		word >> item_id;
@@ -105,6 +110,7 @@ std::vector<std::vector<Rating>> ReadRatings_HoldOneOut(std::string dir) {
 		user_ratings.rbegin()->push_back(rating);
 		userCount = fmax(userCount, rating.userId);
 		itemCount = fmax(itemCount, rating.itemId);
+		//x++;
 	}
 	userCount++;
 	itemCount++;
@@ -193,6 +199,8 @@ int main(int argc, const char * argv[]) {
 	SparseMat trainMat = SparseMat(trainMatrix, trainMatrix_R);
 
 	MF_fastALS fals(trainMat, testRatings, topK, threadNum, factors, maxIter, w0, alpha, reg, init_mean, init_stdev, showProgress, showLoss, userCount, itemCount);
+
+	std::cout << "Start building model" << std::endl;
 	fals.buildModel();
 	evaluate_model(fals, testRatings);
 
