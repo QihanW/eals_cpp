@@ -23,29 +23,29 @@ using namespace Eigen;
 
 typedef Triplet<double> T_d;
 typedef SparseMatrix<double> SpMat;
+typedef Matrix<double, Dynamic, 1> VectorXd;
 typedef Matrix<double, Dynamic, Dynamic> MatrixXd;
 
 
-MF_fastALS::MF_fastALS(SparseMat trainMatrix, std::vector<Rating> testRatings,
-	int topK, int threadNum, int factors, int maxIter, double w0, double alpha, double reg,
-	double init_mean, double init_stdev, bool showProgress, bool showLoss, int userCount,
-	int itemCount)
+MF_fastALS::MF_fastALS(SparseMat trainMatrix1, std::vector<Rating> testRatings1,
+	int topK1, int threadNum1, int factors1, int maxIter1, double w01, double alpha1, double reg1,
+	double init_mean1, double init_stdev1, bool showProgress1, bool showLoss1, int userCount1,
+	int itemCount1)
 {
-	this->trainMatrix = trainMatrix;
-	//trainMatrix_R = _trainMatrix_R;
-	this->testRatings = testRatings;
-	this->topK = topK;
-	this->factors = factors;
-	this->maxIter = maxIter;
-	this->w0 = w0;
-	this->reg = reg;
-	this->alpha = alpha;
-	this->init_mean = init_mean;
-	this->init_stdev = init_stdev;
-	this->showloss = showLoss;
-	this->showprogress = showProgress;
-	this->itemCount = itemCount;
-	this->userCount = userCount;
+	trainMatrix = trainMatrix1;
+	testRatings = testRatings1;
+	topK = topK1;
+	factors = factors1;
+	maxIter = maxIter1;
+	w0 = w01;
+	reg = reg1;
+	alpha = alpha1;
+	init_mean = init_mean1;
+	init_stdev = init_stdev1;
+	showloss = showLoss1;
+	showprogress = showProgress1;
+	itemCount = itemCount1;
+	userCount = userCount1;
 	prediction_users.resize(userCount);
 	prediction_items.resize(itemCount);
 	rating_users.resize(userCount);
@@ -73,11 +73,11 @@ MF_fastALS::MF_fastALS(SparseMat trainMatrix, std::vector<Rating> testRatings,
 		Wi[i] = w0 * p[i] / Z;
 
 	// By default, the weight for positive instance is uniformly 1
-	W.setSize(userCount, itemCount);
+	W = SparseMat(userCount, itemCount);
 	std::vector<T_d> tripletList;
 	for (int u = 0; u < userCount; u++)
-		for (int i = trainMatrix.getRowOutIndex(u); i < trainMatrix_R.getRowOutIndex(u + 1); i++)
-			tripletList.push_back(T_d(u, trainMatrix_R.getRowInIndex(i), 1));
+		for (int i = trainMatrix.getRowOutIndex(u); i < trainMatrix.getRowOutIndex(u + 1); i++)
+			tripletList.push_back(T_d(u, trainMatrix.getRowInIndex(i), 1));
 	SpMat w_temp(userCount, itemCount);
 	w_temp.setFromTriplets(tripletList.begin(), tripletList.end());
 	W.setMatC(w_temp);
@@ -97,8 +97,8 @@ void MF_fastALS::setTrain(SparseMat trainMatrix) {
 	W.setSize(userCount, itemCount);
 	std::vector<T_d> tripletList;
 	for (int u = 0; u < userCount; u++)
-		for (int i = trainMatrix.getRowOutIndex(u); i < trainMatrix_R.getRowOutIndex(u + 1); i++)
-			tripletList.push_back(T_d(u, trainMatrix_R.getRowInIndex(i), 1));
+		for (int i = trainMatrix.getRowOutIndex(u); i < trainMatrix.getRowOutIndex(u + 1); i++)
+			tripletList.push_back(T_d(u, trainMatrix.getRowInIndex(i), 1));
 	SpMat w_temp(userCount, itemCount);
 	w_temp.setFromTriplets(tripletList.begin(), tripletList.end());
 	W.setMatC(w_temp);
@@ -146,7 +146,7 @@ double MF_fastALS::showLoss(int iter, long start, double loss_pre) {
 	clock_t end = clock();
 	double loss_cur = loss();
 	std::string symbol = loss_pre >= loss_cur ? "-" : "+";
-	std::cout << "Iter=" << iter << " " << (double)(end - start)/CLOCKS_PER_SEC << " " << symbol << " loss:" << loss_cur << " " <<(clock() - end)/ CLOCKS_PER_SEC << std::endl;
+	std::cout << "Iter=" << iter << " " <<(double)(end - start)/CLOCKS_PER_SEC << " " << symbol << " loss:" << loss_cur << " " <<(clock() - end)/ CLOCKS_PER_SEC << std::endl;
 
 	return loss_cur;
 }
@@ -156,14 +156,16 @@ double MF_fastALS::loss() {
 	for (int u = 0; u < userCount; u++) {
 		double l = 0;
 		std::vector<int> itemList;
-		for (int i = trainMatrix_R.getRowOutIndex(u); i < trainMatrix_R.getRowOutIndex(u+1); i++)
-			itemList.push_back(trainMatrix_R.getRowInIndex(i));
+		for (int i = trainMatrix.getRowOutIndex(u); i < trainMatrix.getRowOutIndex(u+1); i++)
+			itemList.push_back(trainMatrix.getRowInIndex(i));
 		for (int i : itemList) {
 			double pred = predict(u, i);
 			l += W.getValueC(u, i) * pow(trainMatrix.getValueR(u, i) - pred, 2);
 			l -= Wi[i] * pow(pred, 2);
 		}
-		l += U.row(u) * SV.getData * U.row(u).transpose();
+		MatrixXd u_temp = U.getData();
+		MatrixXd sv_temp = SV.getData();
+		l = l + u_temp.row(u) * sv_temp * u_temp.row(u).transpose();
 		L += l;
 	}
 
@@ -200,8 +202,8 @@ void MF_fastALS::updateModel(int u, int i) {
 void MF_fastALS::update_user(int u) {
 	std::vector<int> itemList;
 
-	for (int i = trainMatrix_R.getRowOutIndex(u); i < trainMatrix_R.getRowOutIndex(u + 1); i++)
-		itemList.push_back(trainMatrix_R.getRowInIndex(i));
+	for (int i = trainMatrix.getRowOutIndex(u); i < trainMatrix.getRowOutIndex(u + 1); i++)
+		itemList.push_back(trainMatrix.getRowInIndex(i));
 	if (itemList.size() == 0)        return;    // user has no ratings
 	// prediction cache for the user
 
@@ -249,8 +251,8 @@ void MF_fastALS::update_user(int u) {
 
 void MF_fastALS::update_item(int i) {
 	std::vector<int> userList;
-	for (int j = trainMatrix_R.getRowOutIndex(i); j < trainMatrix_R.getRowOutIndex(i + 1); j++)
-		userList.push_back(trainMatrix_R.getRowInIndex(j));
+	for (int j = trainMatrix.getRowOutIndex(i); j < trainMatrix.getRowOutIndex(i + 1); j++)
+		userList.push_back(trainMatrix.getRowInIndex(j));
 	if (userList.size() == 0)        return; // item has no ratings.
 	// prediction cache for the item
 	for (int u : userList) {
@@ -297,7 +299,7 @@ void MF_fastALS::update_item(int i) {
 }
 
 void MF_fastALS::initS() {
-	SU = DenseMat(U.transpose()*U.getData);
+	SU = DenseMat(U.transpose()*U.getData());
 	SV= DenseMat(factors, factors);
 	for (int f = 0; f < factors; f++) {
 		for (int k = 0; k <= f; k++) {
