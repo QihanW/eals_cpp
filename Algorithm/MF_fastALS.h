@@ -4,6 +4,8 @@
 #include <vector>
 #include "DenseVec.h"
 #include "DenseMat.h"
+#include "SparseMat.h"
+#include "Rating.h"
 
 //using namespace std;
 
