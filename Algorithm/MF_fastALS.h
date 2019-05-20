@@ -1,6 +1,9 @@
 #ifndef MF_FASTALS_H
 #define MF_FASTALS_H
 
+#define EIGEN_USE_MKL_ALL
+#define EIGEN_VECTORIZE_SSE4_2
+
 #include <vector>
 #include "DenseVec.h"
 #include "DenseMat.h"
