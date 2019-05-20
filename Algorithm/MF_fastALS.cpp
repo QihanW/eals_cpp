@@ -113,6 +113,7 @@ void MF_fastALS::setUV(DenseMat U, DenseMat V) {
 void MF_fastALS::buildModel() {
 	double loss_pre = DBL_MAX;
 	for (int iter = 0; iter < maxIter; iter++) {
+		std::cout << "Iter: " << iter << " when building model" << std::endl;
 		clock_t start = clock();
 		for (int u = 0; u < userCount; u++) {
 			update_user(u);
@@ -206,13 +207,14 @@ void MF_fastALS::update_user(int u) {
 		itemList.push_back(trainMatrix.getRowInIndex(i));
 	if (itemList.size() == 0)        return;    // user has no ratings
 	// prediction cache for the user
+	//std::cout << "210" << std::endl;
 
 	for (int i : itemList) {
 		prediction_items[i] = predict(u, i);
 		rating_items[i] = trainMatrix.getValueR(u, i);
 		w_items[i] = W.getValueC(u, i);
 	}
-
+	//std::cout << "217" << std::endl;
 	DenseVec oldVector = U.row(u);
 	for (int f = 0; f < factors; f++) {
 		double numer = 0, denom = 0;
@@ -237,12 +239,11 @@ void MF_fastALS::update_user(int u) {
 		for (int i : itemList)
 			prediction_items[i] += U.get(u, f) * V.get(i, f);
 	} // end for f
-
+	//std::cout << "242" << std::endl;
 	// Update the SU cache
 	for (int f = 0; f < factors; f++) {
 		for (int k = 0; k <= f; k++) {
-			double val = SU.get(f, k) - oldVector.get(f) * oldVector.get(k)
-				+ U.get(u, f) * U.get(u, k);
+			double val = SU.get(f, k) - oldVector.get(f) * oldVector.get(k) + U.get(u, f) * U.get(u, k);
 			SU.set(f, k, val);
 			SU.set(k, f, val);
 		}
