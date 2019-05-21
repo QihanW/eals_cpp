@@ -147,7 +147,7 @@ double MF_fastALS::showLoss(int iter, long start, double loss_pre) {
 	clock_t end = clock();
 	double loss_cur = loss();
 	std::string symbol = loss_pre >= loss_cur ? "-" : "+";
-	std::cout << "Iter=" << iter << " " <<(double)(end - start)/CLOCKS_PER_SEC << " " << symbol << " loss:" << loss_cur << " " <<(clock() - end)/ CLOCKS_PER_SEC << std::endl;
+	std::cout << "Iter=" << iter << " " <<(double)(end - start)/CLOCKS_PER_SEC << " " << symbol << " loss:" << loss_cur << " " <<(double)(clock() - end)/ CLOCKS_PER_SEC << std::endl;
 
 	return loss_cur;
 }
