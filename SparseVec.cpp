@@ -55,10 +55,10 @@ SparseVec SparseVec::getVector() {
 }
 
 vector<int> SparseVec::indexList(){
-   vector<int> tmp;
-   map<int, double>::iterator iter;
-   for(iter = this->spv.begin(); iter != this->spv.end(); iter++){
-    tmp.insert(tmp.end(), iter->first);
-   } 
-   return tmp;
+  vector<int> tmp;
+	map<int, double>::iterator iter;  
+  for(iter = this->spv.begin(); iter != this->spv.end(); iter++){
+    tmp.insert(tmp.end(), iter->first);      
+  }
+  return tmp;
 }

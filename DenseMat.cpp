@@ -8,32 +8,22 @@ using namespace std;
 
 DenseMat::DenseMat() {
 	this->numColumns = 0;
-	this->numRows = 0;
+	this->numRows = 0;;
 }
 
 DenseMat::DenseMat(int numRows, int numColumns) {
 	this->numColumns = numColumns;
 	this->numRows = numRows;
-	this->matrix = new double*[numRows];
+	this->matrix.resize(numRows);
 	for (int i=0; i<numRows; i++){
-    this->matrix[i] = new double[numColumns];
+    this->matrix[i].resize(numColumns);
   }
 }
 
-DenseMat::DenseMat(double ** mat) {
-	this->numRows = sizeof(mat)/sizeof(mat[0]);                                                
-  this->numColumns = sizeof(mat[0])/sizeof(double);
-	this->matrix = new double*[this->numRows];                                          
-  for (int i=0; i<this->numRows; i++){                                                
-       this->matrix[i] = new double[numColumns];                                   
-   }
-  for(int i=0; i<this->numRows; i++){
-    for (int j=0; j<this->numColumns; j++){
-      this->matrix[i][j] = mat[i][j];
-    }
-  }
- // cout<<"numRows: "<<this->numRows<<endl;
- // cout<<"numColumns: "<<this->numColumns<<endl;
+DenseMat::DenseMat(vector<vector<double>> mat) {;
+	this->numColumns = mat[0].size();
+	this->numRows = mat.size();
+	this->matrix = mat;
 }
 /*
 DenseMat::DenseMat(DenseMat mat){
@@ -102,16 +92,13 @@ DenseMat DenseMat::transpose() {
 }
 
 DenseVec DenseMat::row(int rowId) {
-	DenseVec vec(this->numColumns);
-  for (int i = 0; i<numColumns; i++){
-    vec.set(i, this->matrix[rowId][i]);
-  }
+
+	DenseVec vec(this->matrix[rowId]);
 	return vec;
 }
 
 DenseVec DenseMat::row_fal(int rowId){
-  DenseVec tmp(this->numColumns);
-  tmp.vect = this->matrix[rowId];
+  DenseVec tmp(this->matrix[rowId],false);
   return tmp;
 }
 

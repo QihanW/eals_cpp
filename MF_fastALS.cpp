@@ -45,12 +45,12 @@ MF_fastALS::MF_fastALS(SparseMat trainMatrix1, std::vector<Rating> testRatings1,
 	showprogress = showProgress1;
 	itemCount = itemCount1;
 	userCount = userCount1;
-	prediction_users = new double[userCount];
-	prediction_items = new double[itemCount];
-	rating_users = new double[userCount];
-	rating_items = new double[itemCount];
-	w_users = new double[userCount];
-	w_items = new double[itemCount];
+	prediction_users.resize(userCount);
+	prediction_items.resize(itemCount);
+	rating_users.resize(userCount);
+	rating_items.resize(itemCount);
+	w_users.resize(userCount);
+	w_items.resize(itemCount);
 
 	// Set the Wi as a decay function w0 * pi ^ alpha
 	double sum = 0, Z = 0;
@@ -131,7 +131,7 @@ void MF_fastALS::buildModel() {
      // std::cout << i << std::endl;
 		}
     //std::cout << "end of item" << std::endl;
-   // std::cout << "Time of item_update: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    std::cout << "Time of item_update: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
 		// Show loss
 		if (showloss)
 			loss_pre = showLoss(iter, start, loss_pre);
@@ -259,16 +259,17 @@ void MF_fastALS::updateModel(int u, int i) {
       //numer *= w0;
       // O(Nu) complexity for the positive part
       //clock_t start = clock();
-     // double numer2 = 0;
+      double numer2 = 0;
       //#pragma omp parallel num_thread(16)                                                      
      // {
      // #pragma omp for reduction(+:numer2) reduction(+:denom)
       for (int i : itemList) {
         prediction_items[i] -= U.get(u, f) * V.get(i, f);
-        numer += (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]) * V.get(i, f);
+        numer2 += (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]) * V.get(i, f);
         denom += (w_items[i] - Wi[i]) * V.get(i, f) * V.get(i, f);
       }
      // }
+      numer += numer2;
       denom += SV.get(f, f) + reg;
       
       // Parameter Update

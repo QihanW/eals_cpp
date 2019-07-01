@@ -37,9 +37,9 @@ public:
 	SparseMat W;  // weight for each positive instance in trainMatrix
 
 	std::vector<Rating> testRatings;
-	double * prediction_users, * prediction_items;
-  double * rating_users, *rating_items;
-	double * w_users, * w_items;
+	std::vector<double>  prediction_users, prediction_items;
+	std::vector<double> rating_users, rating_items;
+	std::vector<double> w_users, w_items;
 	std::vector<double> Wi; // weight for negative instances on item i.
 
 	bool showprogress;

@@ -10,10 +10,10 @@ using namespace std;
 class DenseMat {
 public:
 	//double[][] metric;
-	double ** matrix;
+	vector<vector<double> > matrix;
 	DenseMat();
 	DenseMat(int numRows, int numColumns);
-	DenseMat(double ** mat);
+	DenseMat(vector<vector<double>> mat);
 //	DenseMat(DenseMat mat);
 	DenseMat clone();
 	void init(double mean, double sigma);

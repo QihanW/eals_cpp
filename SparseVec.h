@@ -20,7 +20,7 @@ public:
 	void setLength(int num);
 	int itemCount();
 	SparseVec getVector();
-  vector<int> indexList();
+	vector<int> indexList();
 	int n;
 	map<int, double> spv;
 };

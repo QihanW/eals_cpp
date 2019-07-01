@@ -5,20 +5,18 @@
 using namespace std;
 
 DenseVec::DenseVec(int size) {
-	//this->vect.resize(size);
+	this->vect.resize(size);
 	this->size = size;
-	this->vect = new double[size];
 }
 
-DenseVec::DenseVec(double* data) {
+DenseVec::DenseVec(double *data) {
 	//this->vector = data;
 	this->size = sizeof(data)/sizeof(double);
-  this->vect = new double[this->size];
 	for (int i=0; i<this->size; i++){
-    this->vect[i] = data[i];
+    this->vect.push_back(data[i]);
   }
 }
-/*
+
 DenseVec::DenseVec(vector<double> data){
   this->size = data.size();
   //this->vect = data;
@@ -26,18 +24,17 @@ DenseVec::DenseVec(vector<double> data){
     this->vect.push_back(data[i]);
   }
 }
-*/
-DenseVec::DenseVec(double* data, bool judge){
+
+DenseVec::DenseVec(vector<double> data, bool judge){
   if(judge){
-    this->size = sizeof(data)/sizeof(double);
-    this->vect = new double[this->size];
+    this->size = data.size();
       //this->vect = data;
     for (int i=0; i<this->size; i++){
-        this->vect[i] = data[i];
-    }
+        this->vect.push_back(data[i]);
+      }
   }
   else{
-    this->size = sizeof(data)/sizeof(double);
+    this->size = data.size();
     this->vect = data;
   }
 }

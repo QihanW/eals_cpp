@@ -10,9 +10,9 @@ using namespace std;
 class DenseVec {
 public: 
 	DenseVec(int size);
-	DenseVec(double* data);
-	//DenseVec(vector<double> data);
-	DenseVec(double* data, bool judge);
+	DenseVec(double *data);
+	DenseVec(vector<double> data);
+	DenseVec(vector<double> data, bool judge);
 	//DenseVec(DenseVec vec);
 	DenseVec clone();
 	void init(double mean, double sigma);
@@ -22,7 +22,7 @@ public:
 	int getSize();
 	double inner(DenseVec vec);
 
-	double* vect;
+	vector<double> vect;
 	int size;
 };
 
