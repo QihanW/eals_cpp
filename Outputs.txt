@@ -1,0 +1,218 @@
+Holdone out splitting
+Sort items for each user.
+Sorting time:0.705358
+Generate rating matrices
+25677
+Generated splitted matrices time:0.57587
+Data	yelp.rating
+#Users	25677
+#items	25815
+#Ratings	672795	tests	25677
+==========================================
+Start building model
+Time of user_update: 8.64488
+Iter=0 16.9227 - loss:2784.06 3.38024
+Time of user_update: 8.61266
+Iter=1 16.8901 - loss:834.723 3.38049
+Time of user_update: 8.61342
+Iter=2 16.8918 - loss:568.455 3.38216
+Time of user_update: 8.6185
+Iter=3 16.8961 - loss:455.821 3.38159
+Time of user_update: 8.61187
+Iter=4 16.8908 - loss:387.891 3.38233
+Time of user_update: 8.61184
+Iter=5 16.8926 - loss:340.922 3.37996
+Time of user_update: 8.61276
+Iter=6 16.8938 - loss:305.798 3.38018
+Time of user_update: 8.6139
+Iter=7 16.8916 - loss:278.03 3.38008
+Time of user_update: 8.61276
+Iter=8 16.89 - loss:255.208 3.38086
+Time of user_update: 8.61361
+Iter=9 16.891 - loss:236.031 3.38547
+Time of user_update: 8.61501
+Iter=10 16.8919 - loss:219.711 3.38064
+Time of user_update: 8.61272
+Iter=11 16.8896 - loss:205.686 3.38118
+Time of user_update: 8.61959
+Iter=12 16.8973 - loss:193.507 3.38268
+Time of user_update: 8.61079
+Iter=13 16.8876 - loss:182.847 3.38161
+Time of user_update: 8.61167
+Iter=14 16.8915 - loss:173.426 3.39349
+Time of user_update: 8.61707
+Iter=15 16.8954 - loss:165.021 3.3813
+Time of user_update: 8.61337
+Iter=16 16.9064 - loss:157.475 3.3811
+Time of user_update: 8.61436
+Iter=17 16.8917 - loss:150.678 3.38057
+Time of user_update: 8.61343
+Iter=18 16.8915 - loss:144.526 3.38065
+Time of user_update: 8.6126
+Iter=19 16.8909 - loss:138.929 3.37948
+<hr, ndcg, prec>: 	0.00105152	0.000835349	0.000767007
+
+
+Holdone out splitting
+Sort items for each user.
+Sorting time:0.903739
+Generate rating matrices
+25677
+Generated splitted matrices time:0.672997
+Data	yelp.rating
+#Users	25677
+#items	25815
+#Ratings	672795	tests	25677
+==========================================
+Start building model
+Time of user_update: 8.82543
+Time of item_update: 17.3098
+Iter=0 17.3098 - loss:2784.06 3.39536
+Time of user_update: 8.64426
+Time of item_update: 16.982
+Iter=1 16.982 - loss:834.723 3.39994
+Time of user_update: 8.63908
+Time of item_update: 16.98
+Iter=2 16.98 - loss:568.455 3.39605
+Time of user_update: 8.63926
+Time of item_update: 16.9739
+Iter=3 16.974 - loss:455.821 3.39648
+Time of user_update: 8.64015
+Time of item_update: 16.9726
+Iter=4 16.9726 - loss:387.891 3.40017
+Time of user_update: 8.64164
+Time of item_update: 16.9822
+Iter=5 16.9822 - loss:340.922 3.39635
+Time of user_update: 8.63687
+Time of item_update: 16.9703
+Iter=6 16.9703 - loss:305.798 3.3985
+Time of user_update: 8.64116
+Time of item_update: 16.9736
+Iter=7 16.9737 - loss:278.03 3.39498
+Time of user_update: 8.64622
+Time of item_update: 17.1428
+Iter=8 17.1428 - loss:255.208 3.39928
+Time of user_update: 8.66586
+Time of item_update: 17.0563
+Iter=9 17.0564 - loss:236.031 3.41619
+Time of user_update: 8.66952
+Time of item_update: 17.0434
+Iter=10 17.0434 - loss:219.711 3.40877
+Time of user_update: 8.67462
+Time of item_update: 17.0505
+Iter=11 17.0505 - loss:205.686 3.40633
+Time of user_update: 8.66763
+Time of item_update: 17.0399
+Iter=12 17.0399 - loss:193.507 3.40656
+Time of user_update: 8.6683
+Time of item_update: 17.0428
+Iter=13 17.0428 - loss:182.847 3.4104
+Time of user_update: 8.66854
+Time of item_update: 17.0444
+Iter=14 17.0444 - loss:173.426 3.40538
+Time of user_update: 8.67164
+Time of item_update: 17.0496
+Iter=15 17.0496 - loss:165.021 3.41671
+Time of user_update: 8.67147
+Time of item_update: 17.047
+Iter=16 17.0471 - loss:157.475 3.40937
+Time of user_update: 8.67374
+Time of item_update: 17.0458
+Iter=17 17.0458 - loss:150.678 3.4114
+Time of user_update: 8.6671
+Time of item_update: 17.0482
+Iter=18 17.0482 - loss:144.526 3.40816
+Time of user_update: 8.67962
+Time of item_update: 17.0655
+Iter=19 17.0656 - loss:138.929 3.40757
+Time of user_update: 8.67547
+Time of item_update: 17.0498
+Iter=20 17.0499 - loss:133.824 3.41284
+Time of user_update: 8.68162
+Time of item_update: 17.0442
+Iter=21 17.0443 - loss:129.157 3.40108
+Time of user_update: 8.65636
+Time of item_update: 17.0107
+Iter=22 17.0107 - loss:124.882 3.40133
+Time of user_update: 8.66043
+Time of item_update: 17.0113
+Iter=23 17.0113 - loss:120.957 3.40553
+Time of user_update: 8.65494
+Time of item_update: 17.008
+Iter=24 17.008 - loss:117.34 3.40465
+Time of user_update: 8.65202
+Time of item_update: 17.0041
+Iter=25 17.0041 - loss:113.994 3.40627
+Time of user_update: 8.65749
+Time of item_update: 17.0082
+Iter=26 17.0082 - loss:110.887 3.40254
+Time of user_update: 8.65645
+Time of item_update: 17.0091
+Iter=27 17.0092 - loss:107.988 3.40578
+Time of user_update: 8.65401
+Time of item_update: 17.0043
+Iter=28 17.0043 - loss:105.275 3.40765
+Time of user_update: 8.64989
+Time of item_update: 17.0024
+Iter=29 17.0024 - loss:102.726 3.40126
+Time of user_update: 8.65993
+Time of item_update: 17.0056
+Iter=30 17.0057 - loss:100.327 3.40054
+Time of user_update: 8.65346
+Time of item_update: 17.0005
+Iter=31 17.0005 - loss:98.0592 3.40498
+Time of user_update: 8.65116
+Time of item_update: 17.0035
+Iter=32 17.0035 - loss:95.9093 3.40388
+Time of user_update: 8.65404
+Time of item_update: 17.0035
+Iter=33 17.0036 - loss:93.8652 3.40168
+Time of user_update: 8.65651
+Time of item_update: 17.0115
+Iter=34 17.0116 - loss:91.9168 3.40103
+Time of user_update: 8.65796
+Time of item_update: 17.0077
+Iter=35 17.0077 - loss:90.0559 3.40374
+Time of user_update: 8.65333
+Time of item_update: 17.001
+Iter=36 17.0011 - loss:88.2754 3.40943
+Time of user_update: 8.65443
+Time of item_update: 17.0153
+Iter=37 17.0153 - loss:86.5695 3.4013
+Time of user_update: 8.6623
+Time of item_update: 17.0102
+Iter=38 17.0102 - loss:84.9332 3.40121
+Time of user_update: 8.65454
+Time of item_update: 17.004
+Iter=39 17.004 - loss:83.3622 3.4085
+Time of user_update: 8.65391
+Time of item_update: 17.0108
+Iter=40 17.0108 - loss:81.8527 3.40372
+Time of user_update: 8.65337
+Time of item_update: 17.0088
+Iter=41 17.0088 - loss:80.4011 3.40243
+Time of user_update: 8.6526
+Time of item_update: 17.0022
+Iter=42 17.0022 - loss:79.004 3.40225
+Time of user_update: 8.65895
+Time of item_update: 17.0131
+Iter=43 17.0131 - loss:77.6585 3.40495
+Time of user_update: 8.65338
+Time of item_update: 17.0092
+Iter=44 17.0093 - loss:76.3616 3.40571
+Time of user_update: 8.66369
+Time of item_update: 17.0216
+Iter=45 17.0216 - loss:75.1109 3.40103
+Time of user_update: 8.64737
+Time of item_update: 16.9878
+Iter=46 16.9878 - loss:73.9039 3.39897
+Time of user_update: 8.64853
+Time of item_update: 16.9828
+Iter=47 16.9828 - loss:72.7386 3.39997
+Time of user_update: 8.64569
+Time of item_update: 16.9813
+Iter=48 16.9813 - loss:71.6129 3.39932
+Time of user_update: 8.65783
+Time of item_update: 16.9976
+Iter=49 16.9976 - loss:70.5253 3.39989
+<hr, ndcg, prec>: 	0.00116836	0.000941404	0.000864587
