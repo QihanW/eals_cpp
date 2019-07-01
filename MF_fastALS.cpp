@@ -1,4 +1,4 @@
-//#include "omp.h"
+#include "omp.h"
 #include"MF_fastALS.h"
 #include <math.h>
 #include <vector>
@@ -176,7 +176,7 @@ double MF_fastALS::loss() {
     //  std::cout<<l<<endl;
 		//MatrixXd u_temp = U.getData();
 		//MatrixXd sv_temp = SV.getData();
-		l += SV.mult(U.row_fal(u)).inner(U.row_fal(u));
+		l += SV.mult(U.row_fal(u)).inner(U.row_fal(u));;
 		L += l;
     //std::cout<<L<<endl;
 	}
