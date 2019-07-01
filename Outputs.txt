@@ -1,0 +1,43 @@
+Holdone out splitting
+Sort items for each user.
+Sorting time:0.689914
+Generate rating matrices
+25677
+Generated splitted matrices time:0.574169
+Data	yelp.rating
+#Users	25677
+#items	25815
+#Ratings	672795	tests	25677
+==========================================
+Start building model
+Time of user_update: 5.2126
+Time of item_update: 11.021
+Iter=0 11.021 - loss:2784.06 2.11691
+Time of user_update: 5.22079
+Time of item_update: 11.0274
+Iter=1 11.0274 - loss:834.723 2.11336
+Time of user_update: 5.21699
+Time of item_update: 11.0249
+Iter=2 11.0249 - loss:568.455 2.11543
+Time of user_update: 5.22037
+Time of item_update: 11.0256
+Iter=3 11.0257 - loss:455.821 2.11596
+Time of user_update: 5.2156
+Time of item_update: 11.0248
+Iter=4 11.0249 - loss:387.891 2.11544
+Time of user_update: 5.21675
+Time of item_update: 11.03
+Iter=5 11.03 - loss:340.922 2.1147
+Time of user_update: 5.21939
+Time of item_update: 11.0291
+Iter=6 11.0291 - loss:305.798 2.11279
+Time of user_update: 5.21997
+Time of item_update: 11.0285
+Iter=7 11.0285 - loss:278.03 2.11583
+Time of user_update: 5.22319
+Time of item_update: 11.0345
+Iter=8 11.0345 - loss:255.208 2.1158
+Time of user_update: 5.21532
+Time of item_update: 11.0275
+Iter=9 11.0275 - loss:236.031 2.11516
+<hr, ndcg, prec>: 	0.000856798	0.000662711	0.00060288
