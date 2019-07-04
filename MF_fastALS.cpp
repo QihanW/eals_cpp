@@ -246,16 +246,18 @@ void MF_fastALS::update_user(int u) {
     //std::cout << "217" << std::endl;
     //std::cout << "Time of 245: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
     DenseVec oldVector = U.row(u);
-    //start = clock();
+      double *uget = U.matrix[u];
     for (int f = 0; f < factors; f++) {
       double numer = 0, denom = 0;
       // O(K) complexity for the negative part
 //      #pragma omp parallel num_thread(16)
   //    {
     //  #pragma omp for reduction(-:numer)
+      //double *uget = U.matrix[u];
+      double *svget = SV.matrix[f];
       for (int k = 0; k < factors; k++) {
         if (k != f)
-          numer -= U.get(u, k) * SV.get(f, k);
+          numer -= (*(uget+k)) * (*(svget+k));
       }
      // }
       //numer *= w0;
@@ -265,13 +267,15 @@ void MF_fastALS::update_user(int u) {
       //#pragma omp parallel num_thread(16)                                                      
      // {
      // #pragma omp for reduction(+:numer2) reduction(+:denom)
+      double ufget = U.matrix[u][f];
       for (int i : itemList) {
-        prediction_items[i] -= U.get(u, f) * V.get(i, f);
-        numer += (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]) * V.get(i, f);
+        double ifv = V.matrix[i][f];
+        prediction_items[i] -= ufget * ifv;
+        numer += (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]) * ifv;
         //int x =  (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]);
         //numer += x * V.get(i,f);
         
-         denom += (w_items[i] - Wi[i]) * V.get(i, f) * V.get(i, f);
+         denom += (w_items[i] - Wi[i]) * ifv * ifv;
       }
      // }
       denom += SV.get(f, f) + reg;
@@ -290,7 +294,7 @@ void MF_fastALS::update_user(int u) {
     //start = clock();
     for (int f = 0; f < factors; f++) {
       for (int k = 0; k <= f; k++) {
-        double val = SU.get(f, k) - oldVector.get(f) * oldVector.get(k) + U.get(u, f) * U.get(u, k);
+        double val = SU.get(f, k) - oldVector.get(f) * oldVector.get(k) + (*(uget+f)) * (*(uget+k));
         SU.set(f, k, val);
         SU.set(k, f, val);
       }
@@ -323,24 +327,30 @@ void  MF_fastALS::update_item(int i) {
     }
 
     //std::cout << "Time of 300: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    double *vget = V.matrix[i];
 
     DenseVec oldVector = V.row(i);
     for (int f = 0; f < factors; f++) {
       // O(K) complexity for the w0 part
       double numer = 0, denom = 0;
+      //double *vget = V.matrix[i];
+      double *suget = SU.matrix[f];
+
       for (int k = 0; k < factors; k++) {
         if (k != f)
-          numer -= V.get(i, k) * SU.get(f, k);
+          //numer -= V.get(i, k) * SU.get(f, k);
+          numer -= (*(vget+k)) * (*(suget+k));
       }
       numer *= Wi[i];
 
      // std::cout << "Time of 312: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
       // O(Ni) complexity for the positive ratings part
+      double ifv = V.matrix[i][f];
       for (int u : userList) {
-        
-        prediction_users[u] -= U.get(u, f) * V.get(i, f);
-        numer += (w_users[u] * rating_users[u] - (w_users[u] - Wi[i]) * prediction_users[u]) * U.get(u, f);
-        denom += (w_users[u] - Wi[i]) * U.get(u, f) * U.get(u, f);
+        double ufu = U.matrix[u][f];
+        prediction_users[u] -= ufu * ifv;
+        numer += (w_users[u] * rating_users[u] - (w_users[u] - Wi[i]) * prediction_users[u]) * ufu;
+        denom += (w_users[u] - Wi[i]) * ufu * ufu;
       }
       denom += Wi[i] * SU.get(f, f) + reg;
 
@@ -358,7 +368,7 @@ void  MF_fastALS::update_item(int i) {
     for (int f = 0; f < factors; f++) {
       for (int k = 0; k <= f; k++) {
         double val = SV.get(f, k) - oldVector.get(f) * oldVector.get(k) * Wi[i]
-          + V.get(i, f) * V.get(i, k) * Wi[i];
+          + (*(vget+f)) * (*(vget+k)) * Wi[i];
         SV.set(f, k, val);
         SV.set(k, f, val);
       }
