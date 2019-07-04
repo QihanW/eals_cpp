@@ -65,7 +65,7 @@ public:
 	~MF_fastALS();
 
 protected: 
-	void update_user(int u);
+  void update_user(int u);
 	void update_item(int i);
 private:
 	void initS();

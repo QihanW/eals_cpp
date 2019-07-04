@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 #include <cmath>
 #include <assert.h>
 #include "MF_fastALS.h"
@@ -111,8 +112,9 @@ std::vector<std::vector<Rating>> ReadRatings_HoldOneOut(std::string dir) {
 		user_ratings.at(rating.userId).push_back(rating);
 		userCount = fmax(userCount, rating.userId);
 		itemCount = fmax(itemCount, rating.itemId);
-		//x++;
+		x++;
 	}
+  std::cout<<"line num of yelp: "<<x<<std::endl;
 	userCount++;
 	itemCount++;
 	assert(userCount == user_ratings.size());
@@ -134,7 +136,7 @@ int main(int argc, const char * argv[]) {
 	bool showProgress = false;
 	bool showLoss = true;
 	int factors = 64;
-	int maxIter = 10;
+	int maxIter = 50;
 	double reg = 0.01;
 	double alpha = 0.75;
 	double init_mean = 0; 
@@ -161,7 +163,10 @@ int main(int argc, const char * argv[]) {
 	std::vector<Rating> testRatings;
 	clock_t start = clock();
 	SparseMat trainMatrix(userCount, itemCount);
-
+  
+  int num = 0;
+  vector<map<int, double>> test_repeat;
+  test_repeat.resize(userCount);
 	//std::vector<T> tripletList;
 	for (int u = 0; u < userCount; u++) {
 		std::vector<Rating> rating = user_ratings[u];
@@ -172,14 +177,21 @@ int main(int argc, const char * argv[]) {
 				testRatings.push_back(rating[i]);
 			}
 			else { // train
+				//num++;
 				trainMatrix.setValue(user_id, item_id, 1);
+        test_repeat[u].insert(pair<int, double>(item_id, 1));
 			}
 			//                trainMatrix.insert(user_id, item_id) =  1;
 		}
+		num += rating.size()-1 -test_repeat[u].size();
 	}
-
-
-  std::cout << trainMatrix.rows.size()<<endl;
+	/*
+	num = 0;
+  for (int u = 0; u < itemCount; u++){
+    num += trainMatrix.cols[u].spv.size();
+  }*/
+  std::cout<<"Num of elements: "<<num<<std::endl;
+  //std::cout << trainMatrix.rows.size()<<endl;
 	//    trainMatrix.makeCompressed();
 	std::cout << "Generated splitted matrices time:" << (double)(clock() - start) / CLOCKS_PER_SEC << std::endl;
 	std::cout << "Data\t" << dataset_name << std::endl;

@@ -80,7 +80,7 @@ void DenseMat::set(int row, int column, double val) {
 }
 
 double DenseMat::get(int row, int column) {
-	return this->matrix[row][column];
+	return *((*(this->matrix+row))+column);
 }
 
 double DenseMat::squaredSum() {

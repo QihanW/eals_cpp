@@ -20,7 +20,12 @@ SparseVec::SparseVec(SpVec sv) {
 }*/
 
 void SparseVec::setValue(int i, double value) {
-	this->spv.insert(pair<int, double>(i, value));
+  if (this->spv.find(i) != spv.end()) {
+    this->spv[i] = value;
+  } else {
+    this->spv.insert(pair<int, double>(i, value));
+  }
+	//this->n++;
 }
 
 void SparseVec::setVector(SparseVec newVector) {

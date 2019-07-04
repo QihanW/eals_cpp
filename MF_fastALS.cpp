@@ -119,19 +119,22 @@ void MF_fastALS::buildModel() {
 	double loss_pre = DBL_MAX;
 	for (int iter = 0; iter < maxIter; iter++) {
 		//std::cout << "Iter: " << iter << " when building model" << std::endl;
+		int user_list = 0, item_list = 0;
 		clock_t start = clock();
 		for (int u = 0; u < userCount; u++) {
 			update_user(u);
-
+      
 		}
 		std::cout << "Time of user_update: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    //std::cout << "User list size: "<<user_list;
 		// Update item latent vectors
+		clock_t start2 = clock();
 		for (int i = 0; i < itemCount; i++) {
-    	update_item(i);
+      update_item(i);
      // std::cout << i << std::endl;
 		}
-    //std::cout << "end of item" << std::endl;
-   // std::cout << "Time of item_update: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+   // std::cout << " Item list size: "<<item_list<< std::endl;
+    std::cout << "Time of item_update: " <<(double)(clock() - start2)/CLOCKS_PER_SEC  << std::endl;
 		// Show loss
 		if (showloss)
 			loss_pre = showLoss(iter, start, loss_pre);
@@ -218,14 +221,13 @@ void MF_fastALS::updateModel(int u, int i) {
     }
   }
 
-  void MF_fastALS::update_user(int u) {
+void MF_fastALS::update_user(int u) {
    //omp_set_num_threads(16);
     std::vector<int> itemList;
 		itemList = trainMatrix.getRowRef(u).indexList();
-    
+   // int res = itemList.size();
     //clock_t start = clock();
-    
-    if (itemList.size() == 0)        return;    // user has no ratings
+    if (itemList.size() == 0)        return ;    // user has no ratings
     // prediction cache for the user
     //std::cout << "210" << std::endl;
   //  std::cout << "Time of 213: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
@@ -242,7 +244,7 @@ void MF_fastALS::updateModel(int u, int i) {
       //std::cout << "Time of 222: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
     }
     //std::cout << "217" << std::endl;
-    //std::cout << "Time of 234: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    //std::cout << "Time of 245: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
     DenseVec oldVector = U.row(u);
     //start = clock();
     for (int f = 0; f < factors; f++) {
@@ -266,7 +268,10 @@ void MF_fastALS::updateModel(int u, int i) {
       for (int i : itemList) {
         prediction_items[i] -= U.get(u, f) * V.get(i, f);
         numer += (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]) * V.get(i, f);
-        denom += (w_items[i] - Wi[i]) * V.get(i, f) * V.get(i, f);
+        //int x =  (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]);
+        //numer += x * V.get(i,f);
+        
+         denom += (w_items[i] - Wi[i]) * V.get(i, f) * V.get(i, f);
       }
      // }
       denom += SV.get(f, f) + reg;
@@ -280,7 +285,7 @@ void MF_fastALS::updateModel(int u, int i) {
         prediction_items[i] += U.get(u, f) * V.get(i, f);
     } // end for f
     //std::cout << "242" << std::endl;
-    //std::cout << "Time of 261: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+   // std::cout << "Time of 283: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
     // Update the SU cache
     //start = clock();
     for (int f = 0; f < factors; f++) {
@@ -291,14 +296,16 @@ void MF_fastALS::updateModel(int u, int i) {
       }
     //std::cout << "Time of 270: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
     }
-    //std::cout << "Time of 271: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    //return res;
+    //std::cout << "Time of 294: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
   }
 
-  void MF_fastALS::update_item(int i) {
+void  MF_fastALS::update_item(int i) {
     std::vector<int> userList;
-    clock_t	start = clock();
+    //clock_t	start = clock();
   //  std::cout << "Time of 281: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
     userList = trainMatrix.getColRef(i).indexList();
+    //int res = userList.size();
     if (userList.size() == 0)        return; // item has no ratings.
     // prediction cache for the item
    //  std::cout << "Time of 286: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
@@ -357,7 +364,9 @@ void MF_fastALS::updateModel(int u, int i) {
       }
     }
     //std::cout << "Time of 341: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
-  }
+ 
+   //return res;
+}
 
   void MF_fastALS::initS() {
     SU = U.transpose().mult(U);
