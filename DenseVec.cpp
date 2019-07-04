@@ -86,8 +86,10 @@ void DenseVec::set(int idx, double val) {
 double DenseVec::inner(DenseVec vec){
   double result = 0;
   int size = vec.size;
+  double *v1 = this->vect;
+  double *v2 = vec.vect;
 	for (int i = 0; i < size; i++)
-			result += this->vect[i] * vec.vect[i];
+			result += (*(v1+i)) * (*(v2+i));
 
 		return result;
 }

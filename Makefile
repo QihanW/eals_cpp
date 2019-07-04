@@ -5,20 +5,20 @@ CXXFLAGS = -DMKL_ILP64 -I$(MKLROOT)/include -I/home/qwang/eals/eigen/ -g -O3
 OBJECT =  DenseMat.o DenseVec.o SparseMat.o SparseVec.o MF_fastALS.o
 
 eals: main.o $(OBJECT)
-	g++ -o eals main.o $(OBJECT) $(MKLLINK) 
+	icpc -o eals main.o $(OBJECT) $(MKLLINK) 
 
 main.o: MF_fastALS.h Rating.h SparseMat.h
-	g++ -c $(CXXFLAGS) main.cpp
+	icpc -c $(CXXFLAGS) main.cpp
 DenseMat.o: DenseMat.h
-	g++ -c $(CXXFLAGS) DenseMat.cpp
+	icpc -c $(CXXFLAGS) DenseMat.cpp
 DenseVec.o: DenseVec.h
-	g++ -c $(CXXFLAGS) DenseVec.cpp
+	icpc -c $(CXXFLAGS) DenseVec.cpp
 SparseMat.o: SparseMat.h
-	g++ -c $(CXXFLAGS) SparseMat.cpp
+	icpc -c $(CXXFLAGS) SparseMat.cpp
 SparseVec.o: SparseVec.h
-	g++ -c $(CXXFLAGS) SparseVec.cpp
+	icpc -c $(CXXFLAGS) SparseVec.cpp
 MF_fastALS.o: MF_fastALS.h DenseVec.h DenseMat.h SparseVec.h SparseMat.h Rating.h
-	g++ -c $(CXXFLAGS) MF_fastALS.cpp
+	icpc -c $(CXXFLAGS) MF_fastALS.cpp
 
 
 
