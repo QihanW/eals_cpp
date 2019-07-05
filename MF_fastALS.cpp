@@ -74,15 +74,12 @@ MF_fastALS::MF_fastALS(SparseMat trainMatrix1, std::vector<Rating> testRatings1,
 	// By default, the weight for positive instance is uniformly 1
 	W = SparseMat(userCount, itemCount);
 	//std::vector<T_d> tripletList;
-	for (int u = 0; u < userCount; u++){
-    std::vector<int> tmp = trainMatrix.getRowRef(u).indexList();
-    vector<int>::iterator iter;
-    int i = 0;
-    for (iter = tmp.begin(); iter != tmp.end(); iter++){
-      W.setValue(u, i, 1);
-      i++;
-    }
-  }
+	for (int u = 0; u < userCount; u++){                                          
+    W.rows[u].setVector(trainMatrix.rows[u]);                                   
+  }                                                                             
+  for (int i = 0; i < itemCount; i++){                                          
+    W.cols[i].setVector(trainMatrix.cols[i]);                                   
+  } 
 
   //Init model parameters
 	U = DenseMat(userCount, factors);
@@ -99,14 +96,11 @@ void MF_fastALS::setTrain(SparseMat trainMatrix) {
 	
 	W = SparseMat(userCount, itemCount);
 	for (int u = 0; u < userCount; u++){
-    std::vector<int> tmp = trainMatrix.getRowRef(u).indexList();
-    vector<int>::iterator iter;
-    int i = 0;
-    for (iter = tmp.begin(); iter != tmp.end(); iter++){
-      W.setValue(u, i, 1);
-      i++;
-    }
+    W.rows[u].setVector(trainMatrix.rows[u]);
   }
+  for (int i = 0; i < itemCount; i++){
+    W.cols[i].setVector(trainMatrix.cols[i]);
+  }  
 }
 
 void MF_fastALS::setUV(DenseMat U, DenseMat V) {
@@ -461,4 +455,10 @@ void  MF_fastALS::update_item(int i) {
 
   MF_fastALS::~MF_fastALS()
   {
+    delete [] prediction_users;
+    delete [] prediction_items;
+    delete [] rating_users;
+    delete [] rating_items;
+    delete [] w_users;
+    delete [] w_items;
 }

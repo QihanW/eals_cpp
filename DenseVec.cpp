@@ -93,3 +93,9 @@ double DenseVec::inner(DenseVec vec){
 
 		return result;
 }
+
+DenseVec::~DenseVec(){
+//  delete [] this->vect;
+}
+
+

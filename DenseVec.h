@@ -21,6 +21,7 @@ public:
 	double get(int idx);
 	int getSize();
 	double inner(DenseVec vec);
+  ~DenseVec();
 
 	double* vect;
 	int size;

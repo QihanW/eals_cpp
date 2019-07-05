@@ -22,6 +22,8 @@ public:
 	SparseVec getVector();
   vector<int> indexList();
 	int n;
-	map<int, double> spv;
+	int current;
+	int *spv_in;
+	double *spv_do;
 };
 #endif // !SPARSE_VECTO#R_H

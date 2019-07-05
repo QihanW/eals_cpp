@@ -165,8 +165,10 @@ int main(int argc, const char * argv[]) {
 	SparseMat trainMatrix(userCount, itemCount);
   
   int num = 0;
-  vector<map<int, double>> test_repeat;
-  test_repeat.resize(userCount);
+  vector<map<int, double>> user_no_repeat;
+  user_no_repeat.resize(userCount);
+  vector<map<int, double>> item_no_repeat;
+  item_no_repeat.resize(itemCount);
 	//std::vector<T> tripletList;
 	for (int u = 0; u < userCount; u++) {
 		std::vector<Rating> rating = user_ratings[u];
@@ -178,13 +180,30 @@ int main(int argc, const char * argv[]) {
 			}
 			else { // train
 				//num++;
-				trainMatrix.setValue(user_id, item_id, 1);
-        test_repeat[u].insert(pair<int, double>(item_id, 1));
+				//trainMatrix.setValue(user_id, item_id, 1);
+        user_no_repeat[user_id].insert(pair<int, double>(item_id, 1));
+        item_no_repeat[item_id].insert(pair<int, double>(user_id, 1));
 			}
 			//                trainMatrix.insert(user_id, item_id) =  1;
 		}
-		num += rating.size()-1 -test_repeat[u].size();
+		num += rating.size()-1 - user_no_repeat[u].size();
 	}
+
+	for (int u = 0; u < userCount; u++) {
+		trainMatrix.rows[u].setLength(user_no_repeat[u].size());
+  }
+  for (int i = 0; i < itemCount; i++) {
+    trainMatrix.cols[i].setLength(item_no_repeat[i].size());
+  }
+  for (int u = 0; u < userCount; u++) {
+    map<int, double>::iterator iter;
+    //int len = user_no_repeat[u].size();
+    for(iter = user_no_repeat[u].begin(); iter != user_no_repeat[u].end(); iter++){
+       trainMatrix.setValue(u, iter->first, iter->second );
+       
+    }
+  }
+
 	/*
 	num = 0;
   for (int u = 0; u < itemCount; u++){

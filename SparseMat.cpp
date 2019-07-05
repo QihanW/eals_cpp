@@ -15,15 +15,15 @@ typedef SparseMatrix<double, RowMajor> SpMat_R;
 SparseMat::SparseMat() {
 	this->n_c = 0;
 	this->n_r = 0;
-	this->rows.resize(0);
-	this->cols.resize(0);
+	this->rows = new SparseVec[0];
+	this->cols = new SparseVec[0];
 }
 
 SparseMat::SparseMat(int r, int c) {
 	this->n_c = c;
 	this->n_r = r;
-	this->rows.resize(r);
-	this->cols.resize(c);
+	this->rows = new SparseVec[r];
+	this->cols = new SparseVec[c];
 }
 /*
 SparseMat::SparseMat(SparseMat newMat) {
@@ -70,6 +70,8 @@ double SparseMat::getValueR(int i, int j) {
 void SparseMat::setSize(int m, int n) {
 	this->n_r = n;
 	this->n_c = m;
+  this->rows = new SparseVec[n];
+  this->cols = new SparseVec[m];
 }
 
 SparseVec SparseMat::getRowRef(int index) {

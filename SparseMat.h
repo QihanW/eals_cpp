@@ -37,8 +37,8 @@ public:
 
 	int n_r;
 	int n_c;
-	vector<SparseVec> rows;
-	vector<SparseVec> cols;
+	SparseVec *rows;
+	SparseVec *cols;
 };
 
 #endif // !SPARSE_MAT_H
