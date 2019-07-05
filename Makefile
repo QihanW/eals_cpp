@@ -1,6 +1,6 @@
 MKLROOT = /opt/intel/mkl
 MKLLINK = -L$(MKLROOT)/lib/intel64 -L/opt/intel/compilers_and_libraries_2019.0.117/linux/compiler/lib/intel64  -lmkl_intel_ilp64 -lmkl_intel_thread -liomp5 -lmkl_core -lpthread -lm -ldl
-CXXFLAGS = -DMKL_ILP64 -I$(MKLROOT)/include -I/home/qwang/eals/eigen/ -g -O3
+CXXFLAGS = -DMKL_ILP64 -I$(MKLROOT)/include -I/home/qwang/eals/eigen/ -g -O3 -qopenmp
 
 OBJECT =  DenseMat.o DenseVec.o SparseMat.o SparseVec.o MF_fastALS.o
 

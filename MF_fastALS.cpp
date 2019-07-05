@@ -1,4 +1,4 @@
-//#include "omp.h"
+#include "omp.h"
 #include"MF_fastALS.h"
 #include <math.h>
 #include <vector>
@@ -45,12 +45,12 @@ MF_fastALS::MF_fastALS(SparseMat trainMatrix1, std::vector<Rating> testRatings1,
 	showprogress = showProgress1;
 	itemCount = itemCount1;
 	userCount = userCount1;
-	prediction_users = new double[userCount];
-	prediction_items = new double[itemCount];
-	rating_users = new double[userCount];
-	rating_items = new double[itemCount];
-	w_users = new double[userCount];
-	w_items = new double[itemCount];
+	//prediction_users = new double[userCount];
+	//prediction_items = new double[itemCount];
+	//rating_users = new double[userCount];
+	//rating_items = new double[itemCount];
+	//w_users = new double[userCount];
+	//w_items = new double[itemCount];
 
 	// Set the Wi as a decay function w0 * pi ^ alpha
 	double sum = 0, Z = 0;
@@ -67,7 +67,7 @@ MF_fastALS::MF_fastALS(SparseMat trainMatrix1, std::vector<Rating> testRatings1,
 		Z += p[i];
 	}
 	// assign weight
-	Wi.resize(itemCount);
+	Wi = new double[itemCount];
 	for (int i = 0; i < itemCount; i++)
 		Wi[i] = w0 * p[i] / Z;
 
@@ -114,24 +114,47 @@ void MF_fastALS::buildModel() {
 	for (int iter = 0; iter < maxIter; iter++) {
 		//std::cout << "Iter: " << iter << " when building model" << std::endl;
 		int user_list = 0, item_list = 0;
+		
+		DenseMat u_clone(userCount, factors);
+		for (int i = 0; i<userCount; i++){
+      for (int j = 0; j<factors; j++){
+        u_clone.matrix[i][j] = U.matrix[i][j];
+      }
+    }
 		clock_t start = clock();
+		
 		for (int u = 0; u < userCount; u++) {
-			update_user(u);
-      
+			update_user_thread(u);  
 		}
-		std::cout << "Time of user_update: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    for (int u = 0; u < userCount; u++){
+      update_user_SU(u_clone.matrix[u], U.matrix[u]);
+    }
+    double time_user_update = (double)(clock() - start)/CLOCKS_PER_SEC;
+		std::cout << "Time of user_update: " <<time_user_update<< std::endl;
     //std::cout << "User list size: "<<user_list;
 		// Update item latent vectors
-		clock_t start2 = clock();
+	 DenseMat v_clone(itemCount, factors);
+    for (int i = 0; i<itemCount; i++){
+	    for (int j = 0; j<factors; j++){
+		    v_clone.matrix[i][j] = V.matrix[i][j];
+	     }
+     }
+	  
+	  
+	  start = clock();
 		for (int i = 0; i < itemCount; i++) {
-      update_item(i);
+      update_item_thread(i);
      // std::cout << i << std::endl;
 		}
-   // std::cout << " Item list size: "<<item_list<< std::endl;
-    std::cout << "Time of item_update: " <<(double)(clock() - start2)/CLOCKS_PER_SEC  << std::endl;
+		for (int i = 0; i < itemCount; i++){
+      update_item_SV(i, v_clone.matrix[i], V.matrix[i]);
+    }
+      
+    double time_item_update = (double)(clock() - start)/CLOCKS_PER_SEC;
+    std::cout << "Time of item_update: " << time_item_update << std::endl;
 		// Show loss
 		if (showloss)
-			loss_pre = showLoss(iter, start, loss_pre);
+			loss_pre = showLoss(iter, (time_user_update+time_item_update), loss_pre);
 
 	} // end for iter
 }
@@ -139,20 +162,20 @@ void MF_fastALS::buildModel() {
 void MF_fastALS::runOneIteration() {
 	// Update user latent vectors
 	for (int u = 0; u < this->userCount; u++) {
-		update_user(u);
+		update_user_thread(u);
 	}
 
 	// Update item latent vectors
 	for (int i = 0; i < this->itemCount; i++) {
-		update_item(i);
+		update_item_thread(i);
 	}
 }
 
-double MF_fastALS::showLoss(int iter, long start, double loss_pre) {
+double MF_fastALS::showLoss(int iter, double time, double loss_pre) {
 	clock_t end = clock();
 	double loss_cur = loss();
 	std::string symbol = loss_pre >= loss_cur ? "-" : "+";
-	std::cout << "Iter=" << iter << " " <<(double)(end - start)/CLOCKS_PER_SEC << " " << symbol << " loss:" << loss_cur << " " <<(double)(clock() - end)/ CLOCKS_PER_SEC << std::endl;
+	std::cout << "Iter=" << iter << " " <<time << " " << symbol << " loss:" << loss_cur << " " <<(double)(clock() - end)/ CLOCKS_PER_SEC << std::endl;
 
 	return loss_cur;
 }
@@ -210,11 +233,191 @@ void MF_fastALS::updateModel(int u, int i) {
     }
     int maxIterOnline = 10;
     for (int iter = 0; iter < maxIterOnline; iter++) {
-      update_user(u);
-      update_item(i);
+      update_user_thread(u);
+      update_item_thread(i);
     }
   }
+void MF_fastALS::update_user_thread(int u){
+    
+    std::vector<int> itemList;
+		itemList = trainMatrix.getRowRef(u).indexList();
+   // int res = itemList.size();
+    //clock_t start = clock();
+    if (itemList.size() == 0)        return ;    // user has no ratings
+    
+    double *prediction_items = new double[itemCount];
+    double *rating_items = new double[itemCount]; 
+    double *w_items = new double[itemCount]; 
 
+    // prediction cache for the user
+    
+
+  //  std::cout << "Time of 213: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    //std::cout << itemList.size() << std::endl;
+    //#pragma omp parallel for 
+    for (int i : itemList) {
+      //start = clock();
+      prediction_items[i] = predict(u, i);
+    //start = clock();
+      //std::cout << "Time of 218: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+      rating_items[i] = trainMatrix.getValue(u, i);
+      //std::cout << "Time of 220: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+      w_items[i] = W.getValue(u, i);
+      //std::cout << "Time of 222: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    }
+    //std::cout << "217" << std::endl;
+    //std::cout << "Time of 245: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    //DenseVec oldVector = U.row(u);
+      double *uget = U.matrix[u];
+    for (int f = 0; f < factors; f++) {
+      double numer = 0, denom = 0;
+      // O(K) complexity for the negative part
+//      #pragma omp parallel num_thread(16)
+  //    {
+    //  #pragma omp for reduction(-:numer)
+      //double *uget = U.matrix[u];
+      double *svget = SV.matrix[f];
+      for (int k = 0; k < factors; k++) {
+        if (k != f)
+          numer -= (*(uget+k)) * (*(svget+k));
+      }
+     // }
+      //numer *= w0;
+      // O(Nu) complexity for the positive part
+      //clock_t start = clock();
+     // double numer2 = 0;
+      //#pragma omp parallel num_thread(16)                                                      
+     // {
+     // #pragma omp for reduction(+:numer2) reduction(+:denom)
+      double ufget = U.matrix[u][f];
+      for (int i : itemList) {
+        double ifv = V.matrix[i][f];
+        prediction_items[i] -= ufget * ifv;
+        numer += (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]) * ifv;
+        //int x =  (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]);
+        //numer += x * V.get(i,f);
+        
+         denom += (w_items[i] - Wi[i]) * ifv * ifv;
+      }
+     // }
+      denom += SV.get(f, f) + reg;
+      
+      // Parameter Update
+      U.set(u, f, numer / denom);
+
+      // Update the prediction cache
+//      #pragma omp parallel for shared(prediction_items)  
+      for (int i : itemList)
+        prediction_items[i] += U.get(u, f) * V.get(i, f);
+    } // end for f
+
+    delete [] prediction_items;
+    delete [] rating_items;
+    delete [] w_items;
+
+}
+
+void MF_fastALS::update_user_SU(double *oldVector, double *uget){
+  double ** suget = SU.matrix;
+  double * sugetu;
+  for (int f = 0; f < factors; f++) {
+      sugetu = *( suget + f);
+      for (int k = 0; k <= f; k++) {
+        double val = (*(sugetu + k)) - (*(oldVector+f)) * (*(oldVector+k)) + (*(uget+f)) * (*(uget+k));
+        SU.set(f, k, val);
+        SU.set(k, f, val);
+      }
+    }
+}
+
+
+void  MF_fastALS::update_item_thread(int i){
+  std::vector<int> userList;
+    //clock_t	start = clock();
+  //  std::cout << "Time of 281: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    userList = trainMatrix.getColRef(i).indexList();
+    //int res = userList.size();
+    if (userList.size() == 0)        return; // item has no ratings.
+    // prediction cache for the item
+   //  std::cout << "Time of 286: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    double *prediction_users = new double[userCount];
+    double *rating_users = new double[userCount];
+    double *w_users = new double[userCount];
+
+    
+    for (int u : userList) {
+      //if(u<25677){
+
+    //	   if (i == 25458)
+      //   std::cout << u << "Time of 288: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+      prediction_users[u] = predict(u, i);
+      //if (i == 25458)
+        // std::cout << u << " Time of 292: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+      rating_users[u] = trainMatrix.getValue(u, i);
+      w_users[u] = W.getValue(u, i);
+     // }
+    }
+
+    //std::cout << "Time of 300: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+    double *vget = V.matrix[i];
+
+    //DenseVec oldVector = V.row(i);
+    for (int f = 0; f < factors; f++) {
+      // O(K) complexity for the w0 part
+      double numer = 0, denom = 0;
+      //double *vget = V.matrix[i];
+      double *suget = SU.matrix[f];
+
+      for (int k = 0; k < factors; k++) {
+        if (k != f)
+          //numer -= V.get(i, k) * SU.get(f, k);
+          numer -= (*(vget+k)) * (*(suget+k));
+      }
+      numer *= Wi[i];
+
+     // std::cout << "Time of 312: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+      // O(Ni) complexity for the positive ratings part
+      double ifv = V.matrix[i][f];
+      for (int u : userList) {
+        double ufu = U.matrix[u][f];
+        prediction_users[u] -= ufu * ifv;
+        numer += (w_users[u] * rating_users[u] - (w_users[u] - Wi[i]) * prediction_users[u]) * ufu;
+        denom += (w_users[u] - Wi[i]) * ufu * ufu;
+      }
+      denom += Wi[i] * SU.get(f, f) + reg;
+
+     //std::cout << "Time of 322: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+      // Parameter update
+      V.set(i, f, numer / denom);
+      // Update the prediction cache for the item
+      for (int u : userList)
+
+          prediction_users[u] += U.get(u, f) * V.get(i, f);
+    } // end for f
+
+   delete [] prediction_users;
+   delete [] rating_users;
+   delete [] w_users;
+
+}
+
+void MF_fastALS::update_item_SV(int i, double *oldVector, double *vget){
+  double ** svget = SV.matrix;
+  double * svgeti;
+  
+  for (int f = 0; f < factors; f++) {
+    svgeti = *(svget + f);  
+    for (int k = 0; k <= f; k++) {
+        double val = (*(svgeti + k)) - (*(oldVector+f)) * (*(oldVector+k)) * Wi[i]
+          + (*(vget+f)) * (*(vget+k)) * Wi[i];
+        SV.set(f, k, val);
+        SV.set(k, f, val);
+      }
+    }
+}
+
+
+/*
 void MF_fastALS::update_user(int u) {
    //omp_set_num_threads(16);
     std::vector<int> itemList;
@@ -371,7 +574,7 @@ void  MF_fastALS::update_item(int i) {
  
    //return res;
 }
-
+*/
   void MF_fastALS::initS() {
     SU = U.transpose().mult(U);
     SV= DenseMat(factors, factors);
@@ -455,10 +658,11 @@ void  MF_fastALS::update_item(int i) {
 
   MF_fastALS::~MF_fastALS()
   {
-    delete [] prediction_users;
-    delete [] prediction_items;
-    delete [] rating_users;
-    delete [] rating_items;
-    delete [] w_users;
-    delete [] w_items;
+    //delete [] prediction_users;
+    //delete [] prediction_items;
+    //delete [] rating_users;
+    //delete [] rating_items;
+    //delete [] w_users;
+    //delete [] w_items;
+    delete [] Wi;
 }

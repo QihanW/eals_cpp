@@ -37,10 +37,13 @@ public:
 	SparseMat W;  // weight for each positive instance in trainMatrix
 
 	std::vector<Rating> testRatings;
-	double * prediction_users, * prediction_items;
-  double * rating_users, *rating_items;
-	double * w_users, * w_items;
-	std::vector<double> Wi; // weight for negative instances on item i.
+	//double * prediction_users;
+	//double * prediction_items;
+  //double * rating_users;
+  //double *rating_items;
+	//double * w_users; 
+	//double * w_items;
+	double * Wi; // weight for negative instances on item i.
 
 	bool showprogress;
 	bool showloss;
@@ -54,7 +57,7 @@ public:
 	void setUV(DenseMat U, DenseMat V);
 	void buildModel();
 	void runOneIteration();
-	double showLoss(int iter, long start, double loss_pre);
+	double showLoss(int iter, double time, double loss_pre);
 	double loss();
 	double predict(int u, int i);
 	void updateModel(int u, int i);
@@ -62,10 +65,14 @@ public:
 	double getNDCG(std::vector<int> rankList, int gtItem);
 	double getPrecision(std::vector<int> rankList, int gtItem);
 	std::vector<double> evaluate_for_user(int u, int gtItem, int topK);
+	void update_user_thread(int u);
+	void update_user_SU(double *oldVector, double *uget);
+	void update_item_thread(int i);
+	void update_item_SV(int i, double *oldVector, double *vget);
 	~MF_fastALS();
 
 protected: 
-  void update_user(int u);
+ // void update_user(int u);
 	void update_item(int i);
 private:
 	void initS();
