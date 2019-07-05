@@ -45,12 +45,12 @@ MF_fastALS::MF_fastALS(SparseMat trainMatrix1, std::vector<Rating> testRatings1,
 	showprogress = showProgress1;
 	itemCount = itemCount1;
 	userCount = userCount1;
-	//prediction_users = new double[userCount];
-	//prediction_items = new double[itemCount];
-	//rating_users = new double[userCount];
-	//rating_items = new double[itemCount];
-	//w_users = new double[userCount];
-	//w_items = new double[itemCount];
+	prediction_users = new double[userCount];
+	prediction_items = new double[itemCount];
+	rating_users = new double[userCount];
+	rating_items = new double[itemCount];
+	w_users = new double[userCount];
+	w_items = new double[itemCount];
 
 	// Set the Wi as a decay function w0 * pi ^ alpha
 	double sum = 0, Z = 0;
@@ -110,6 +110,7 @@ void MF_fastALS::setUV(DenseMat U, DenseMat V) {
 }
 
 void MF_fastALS::buildModel() {
+	//omp_set_num_threads(256);
 	double loss_pre = DBL_MAX;
 	for (int iter = 0; iter < maxIter; iter++) {
 		//std::cout << "Iter: " << iter << " when building model" << std::endl;
@@ -122,7 +123,7 @@ void MF_fastALS::buildModel() {
       }
     }
 		clock_t start = clock();
-		
+    //#pragma omp parallel for schedule(static, 128) private(prediction_users, rating_users, w_users, V,U)
 		for (int u = 0; u < userCount; u++) {
 			update_user_thread(u);  
 		}
@@ -245,9 +246,9 @@ void MF_fastALS::update_user_thread(int u){
     //clock_t start = clock();
     if (itemList.size() == 0)        return ;    // user has no ratings
     
-    double *prediction_items = new double[itemCount];
-    double *rating_items = new double[itemCount]; 
-    double *w_items = new double[itemCount]; 
+    //double *prediction_items = new double[itemCount];
+    //double *rating_items = new double[itemCount]; 
+   // double *w_items = new double[itemCount]; 
 
     // prediction cache for the user
     
@@ -269,6 +270,7 @@ void MF_fastALS::update_user_thread(int u){
     //std::cout << "Time of 245: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
     //DenseVec oldVector = U.row(u);
       double *uget = U.matrix[u];
+      //double *vget = V.matrix[u];
     for (int f = 0; f < factors; f++) {
       double numer = 0, denom = 0;
       // O(K) complexity for the negative part
@@ -300,20 +302,20 @@ void MF_fastALS::update_user_thread(int u){
          denom += (w_items[i] - Wi[i]) * ifv * ifv;
       }
      // }
-      denom += SV.get(f, f) + reg;
+      denom +=(*(svget+f)) + reg;
       
       // Parameter Update
-      U.set(u, f, numer / denom);
+      (*(uget+f)) = numer / denom;
 
       // Update the prediction cache
 //      #pragma omp parallel for shared(prediction_items)  
       for (int i : itemList)
-        prediction_items[i] += U.get(u, f) * V.get(i, f);
+        prediction_items[i] +=  (*(uget+f)) * V.matrix[i][f];
     } // end for f
 
-    delete [] prediction_items;
-    delete [] rating_items;
-    delete [] w_items;
+    //delete [] prediction_items;
+    //delete [] rating_items;
+    //delete [] w_items;
 
 }
 
@@ -340,9 +342,9 @@ void  MF_fastALS::update_item_thread(int i){
     if (userList.size() == 0)        return; // item has no ratings.
     // prediction cache for the item
    //  std::cout << "Time of 286: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
-    double *prediction_users = new double[userCount];
-    double *rating_users = new double[userCount];
-    double *w_users = new double[userCount];
+    //double *prediction_users = new double[userCount];
+    //double *rating_users = new double[userCount];
+    //double *w_users = new double[userCount];
 
     
     for (int u : userList) {
@@ -384,20 +386,21 @@ void  MF_fastALS::update_item_thread(int i){
         numer += (w_users[u] * rating_users[u] - (w_users[u] - Wi[i]) * prediction_users[u]) * ufu;
         denom += (w_users[u] - Wi[i]) * ufu * ufu;
       }
-      denom += Wi[i] * SU.get(f, f) + reg;
+      denom += Wi[i] * (*(suget+f)) + reg;
 
      //std::cout << "Time of 322: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
       // Parameter update
-      V.set(i, f, numer / denom);
+     // V.set(i, f, numer / denom);
       // Update the prediction cache for the item
+      (*(vget+f)) = numer / denom;
       for (int u : userList)
 
-          prediction_users[u] += U.get(u, f) * V.get(i, f);
+          prediction_users[u] +=  U.matrix[u][f] * (*(vget+f)) ;
     } // end for f
 
-   delete [] prediction_users;
-   delete [] rating_users;
-   delete [] w_users;
+   //delete [] prediction_users;
+   //delete [] rating_users;
+   //delete [] w_users;
 
 }
 
@@ -658,11 +661,11 @@ void  MF_fastALS::update_item(int i) {
 
   MF_fastALS::~MF_fastALS()
   {
-    //delete [] prediction_users;
-    //delete [] prediction_items;
-    //delete [] rating_users;
-    //delete [] rating_items;
-    //delete [] w_users;
-    //delete [] w_items;
+    delete [] prediction_users;
+    delete [] prediction_items;
+    delete [] rating_users;
+    delete [] rating_items;
+    delete [] w_users;
+    delete [] w_items;
     delete [] Wi;
 }
