@@ -206,15 +206,17 @@ double MF_fastALS::loss() {
 }
 
 double MF_fastALS::predict(int u, int i) {
-	
-//	clock_t start = clock();
-	//MatrixXd u_temp = U.getData();
-  //std::cout << "Time of 181: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
-	//MatrixXd v_temp = V.getData();
- // std::cout << "Time of 183: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+
  //double res =  u_temp.row(u) * v_temp.row(i).transpose();
- double res =  U.row_fal(u).inner(V.row_fal(i));
- //std::cout << "Time of 185: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+ //double res =  U.row_fal(u).inner(V.row_fal(i));
+ double * u_tmp = U.matrix[u];
+ double * v_tmp = V.matrix[i];
+ double res = 0;
+ //int len = U.numColumns;
+ for(int k=0; k<factors; k++){
+  res += (*(u_tmp+k)) * (*(v_tmp+k));
+ }
+
 	return res;
 }
 
@@ -261,7 +263,7 @@ void MF_fastALS::update_user_thread(int u){
       prediction_items[i] = predict(u, i);
     //start = clock();
       //std::cout << "Time of 218: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
-      rating_items[i] = trainMatrix.getValue(u, i);
+      rating_items[i] = trainMatrix.rows[u].getValue(i);
       //std::cout << "Time of 220: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
       w_items[i] = W.getValue(u, i);
       //std::cout << "Time of 222: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
