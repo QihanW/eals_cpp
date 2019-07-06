@@ -1,163 +1,163 @@
 Holdone out splitting
 Sort items for each user.
 line num of yelp: 731671
-Sorting time:0.572738
+Sorting time:0.561618
 Generate rating matrices
 Num of elements: 33199
-Generated splitted matrices time:0.284808
+Generated splitted matrices time:0.282427
 Data	yelp.rating
 #Users	25677
 #items	25815
 #Ratings	672795	tests	25677
 ==========================================
 Start building model
-Time of user_update: 1.10775
-Time of item_update: 1.23537
-Iter=0 2.34318 - loss:262185 0.992187
-Time of user_update: 1.10847
-Time of item_update: 1.23235
-Iter=1 2.34086 - loss:96399.7 0.995613
-Time of user_update: 1.1016
-Time of item_update: 1.2404
-Iter=2 2.34204 - loss:66761.4 0.995358
-Time of user_update: 1.11079
-Time of item_update: 1.23745
-Iter=3 2.34828 - loss:54540.5 0.991918
-Time of user_update: 1.10509
-Time of item_update: 1.23416
-Iter=4 2.33928 - loss:47588.8 0.994006
-Time of user_update: 1.22082
-Time of item_update: 1.31747
-Iter=5 2.53834 - loss:42994.4 1.01668
-Time of user_update: 1.12936
-Time of item_update: 1.27532
-Iter=6 2.40472 - loss:39684.6 1.019
-Time of user_update: 1.14534
-Time of item_update: 1.27108
-Iter=7 2.41648 - loss:37163.7 1.025
-Time of user_update: 1.1349
-Time of item_update: 1.27398
-Iter=8 2.40892 - loss:35166.4 1.02497
-Time of user_update: 1.13765
-Time of item_update: 1.27305
-Iter=9 2.41074 - loss:33535.7 1.03233
-Time of user_update: 1.13633
-Time of item_update: 1.27199
-Iter=10 2.40836 - loss:32172 1.02644
-Time of user_update: 1.14029
-Time of item_update: 1.27161
-Iter=11 2.41195 - loss:31009.4 1.02415
-Time of user_update: 1.1392
-Time of item_update: 1.27077
-Iter=12 2.41001 - loss:30002.7 1.02534
-Time of user_update: 1.1374
-Time of item_update: 1.27231
-Iter=13 2.40975 - loss:29120.2 1.03229
-Time of user_update: 1.13328
-Time of item_update: 1.27154
-Iter=14 2.40485 - loss:28339.3 1.02425
-Time of user_update: 1.13562
-Time of item_update: 1.27721
-Iter=15 2.41287 - loss:27643 1.0263
-Time of user_update: 1.13926
-Time of item_update: 1.27233
-Iter=16 2.41164 - loss:27018.6 1.02522
-Time of user_update: 1.13289
-Time of item_update: 1.28052
-Iter=17 2.41346 - loss:26456 1.02422
-Time of user_update: 1.13189
-Time of item_update: 1.2726
-Iter=18 2.40454 - loss:25946.8 1.02539
-Time of user_update: 1.13568
-Time of item_update: 1.27694
-Iter=19 2.41266 - loss:25484.2 1.02518
-Time of user_update: 1.13857
-Time of item_update: 1.2704
-Iter=20 2.40902 - loss:25062.2 1.02213
-Time of user_update: 1.12987
-Time of item_update: 1.27688
-Iter=21 2.40679 - loss:24675.9 1.02673
-Time of user_update: 1.14003
-Time of item_update: 1.26984
-Iter=22 2.40991 - loss:24321.1 1.02568
-Time of user_update: 1.13153
-Time of item_update: 1.27416
-Iter=23 2.40572 - loss:23994.2 1.02233
-Time of user_update: 1.13944
-Time of item_update: 1.2752
-Iter=24 2.41469 - loss:23692 1.02567
-Time of user_update: 1.13398
-Time of item_update: 1.27161
-Iter=25 2.40563 - loss:23411.9 1.02519
-Time of user_update: 1.13397
-Time of item_update: 1.28304
-Iter=26 2.41705 - loss:23151.6 1.01911
-Time of user_update: 1.1382
-Time of item_update: 1.2715
-Iter=27 2.40974 - loss:22909.1 1.02348
-Time of user_update: 1.13641
-Time of item_update: 1.27208
-Iter=28 2.40853 - loss:22682.5 1.02501
-Time of user_update: 1.13379
-Time of item_update: 1.27495
-Iter=29 2.40879 - loss:22470.5 1.02448
-Time of user_update: 1.13242
-Time of item_update: 1.27452
-Iter=30 2.40698 - loss:22271.6 1.02281
-Time of user_update: 1.13663
-Time of item_update: 1.27127
-Iter=31 2.40795 - loss:22084.7 1.025
-Time of user_update: 1.1325
-Time of item_update: 1.26978
-Iter=32 2.40232 - loss:21908.6 1.0309
-Time of user_update: 1.13351
-Time of item_update: 1.27257
-Iter=33 2.40612 - loss:21742.5 1.24729
-Time of user_update: 1.26266
-Time of item_update: 1.40198
-Iter=34 2.66468 - loss:21585.5 1.31353
-Time of user_update: 1.26138
-Time of item_update: 1.39669
-Iter=35 2.65811 - loss:21436.8 1.30061
-Time of user_update: 1.25004
-Time of item_update: 1.38447
-Iter=36 2.63455 - loss:21295.9 1.29738
-Time of user_update: 1.25065
-Time of item_update: 1.38854
-Iter=37 2.63923 - loss:21162 1.29746
-Time of user_update: 1.25899
-Time of item_update: 1.41323
-Iter=38 2.67227 - loss:21034.7 1.3154
-Time of user_update: 1.27288
-Time of item_update: 1.41025
-Iter=39 2.68317 - loss:20913.5 1.32055
-Time of user_update: 1.27365
-Time of item_update: 1.40291
-Iter=40 2.6766 - loss:20797.9 1.3005
-Time of user_update: 1.25341
-Time of item_update: 1.38816
-Iter=41 2.6416 - loss:20687.6 1.30037
-Time of user_update: 1.25337
-Time of item_update: 1.41167
-Iter=42 2.66509 - loss:20582.2 1.31826
-Time of user_update: 1.27126
-Time of item_update: 1.41488
-Iter=43 2.68618 - loss:20481.3 1.32373
-Time of user_update: 1.2741
-Time of item_update: 1.41204
-Iter=44 2.68618 - loss:20384.7 1.31866
-Time of user_update: 1.25388
-Time of item_update: 1.38662
-Iter=45 2.64054 - loss:20292 1.30052
-Time of user_update: 1.25381
-Time of item_update: 1.3906
-Iter=46 2.64445 - loss:20203.1 1.32534
-Time of user_update: 1.27195
-Time of item_update: 1.41811
-Iter=47 2.69011 - loss:20117.8 1.32345
-Time of user_update: 1.27876
-Time of item_update: 1.41348
-Iter=48 2.69229 - loss:20035.7 1.31928
-Time of user_update: 1.27069
-Time of item_update: 1.40451
-Iter=49 2.67524 - loss:19956.8 1.30255
+Time of user_update: 0.921547
+Time of item_update: 1.02101
+Iter=0 1.94256 - loss:262185 0.989419
+Time of user_update: 0.91642
+Time of item_update: 1.02977
+Iter=1 1.94619 - loss:96399.7 0.990038
+Time of user_update: 0.92371
+Time of item_update: 1.02213
+Iter=2 1.94584 - loss:66761.4 0.992588
+Time of user_update: 0.920116
+Time of item_update: 1.0249
+Iter=3 1.94502 - loss:54540.5 0.988442
+Time of user_update: 0.924423
+Time of item_update: 1.0241
+Iter=4 1.94852 - loss:47588.8 0.993353
+Time of user_update: 0.919764
+Time of item_update: 1.0215
+Iter=5 1.94126 - loss:42994.4 0.994498
+Time of user_update: 0.919329
+Time of item_update: 1.02604
+Iter=6 1.94537 - loss:39684.6 0.989333
+Time of user_update: 0.924754
+Time of item_update: 1.02245
+Iter=7 1.9472 - loss:37163.7 0.993911
+Time of user_update: 0.918783
+Time of item_update: 1.02709
+Iter=8 1.94588 - loss:35166.4 0.989194
+Time of user_update: 0.92381
+Time of item_update: 1.0222
+Iter=9 1.94601 - loss:33535.7 0.993821
+Time of user_update: 0.920576
+Time of item_update: 1.02716
+Iter=10 1.94774 - loss:32172 0.988928
+Time of user_update: 0.920925
+Time of item_update: 1.0263
+Iter=11 1.94723 - loss:31009.4 0.99086
+Time of user_update: 0.92417
+Time of item_update: 1.02278
+Iter=12 1.94695 - loss:30002.7 0.99335
+Time of user_update: 0.920368
+Time of item_update: 1.02694
+Iter=13 1.94731 - loss:29120.2 0.990843
+Time of user_update: 0.922985
+Time of item_update: 1.02191
+Iter=14 1.94489 - loss:28339.3 0.992454
+Time of user_update: 0.921101
+Time of item_update: 1.02904
+Iter=15 1.95014 - loss:27643 0.992583
+Time of user_update: 0.924671
+Time of item_update: 1.02229
+Iter=16 1.94696 - loss:27018.6 0.993246
+Time of user_update: 0.920396
+Time of item_update: 1.02572
+Iter=17 1.94612 - loss:26456 0.988337
+Time of user_update: 0.920566
+Time of item_update: 1.02712
+Iter=18 1.94769 - loss:25946.8 0.989787
+Time of user_update: 0.920841
+Time of item_update: 1.0223
+Iter=19 1.94314 - loss:25484.2 0.993741
+Time of user_update: 0.920369
+Time of item_update: 1.02651
+Iter=20 1.94688 - loss:25062.2 0.990084
+Time of user_update: 0.924056
+Time of item_update: 1.02279
+Iter=21 1.94684 - loss:24675.9 0.994744
+Time of user_update: 0.920112
+Time of item_update: 1.02597
+Iter=22 1.94608 - loss:24321.1 0.989514
+Time of user_update: 0.920196
+Time of item_update: 1.02359
+Iter=23 1.94379 - loss:23994.2 0.98963
+Time of user_update: 0.924672
+Time of item_update: 1.02278
+Iter=24 1.94745 - loss:23692 0.995076
+Time of user_update: 0.919214
+Time of item_update: 1.02682
+Iter=25 1.94603 - loss:23411.9 0.990307
+Time of user_update: 0.923577
+Time of item_update: 1.0216
+Iter=26 1.94517 - loss:23151.6 0.995108
+Time of user_update: 0.921249
+Time of item_update: 1.02713
+Iter=27 1.94838 - loss:22909.1 0.988531
+Time of user_update: 0.919417
+Time of item_update: 1.02466
+Iter=28 1.94408 - loss:22682.5 0.990136
+Time of user_update: 0.923272
+Time of item_update: 1.0239
+Iter=29 1.94717 - loss:22470.5 0.993522
+Time of user_update: 0.920086
+Time of item_update: 1.02608
+Iter=30 1.94616 - loss:22271.6 0.988525
+Time of user_update: 0.92276
+Time of item_update: 1.02187
+Iter=31 1.94463 - loss:22084.7 0.994496
+Time of user_update: 1.02174
+Time of item_update: 1.14938
+Iter=32 2.17112 - loss:21908.6 1.26797
+Time of user_update: 1.0456
+Time of item_update: 1.1427
+Iter=33 2.1883 - loss:21742.5 1.26848
+Time of user_update: 1.04425
+Time of item_update: 1.14542
+Iter=34 2.18967 - loss:21585.5 1.26785
+Time of user_update: 1.04159
+Time of item_update: 1.14468
+Iter=35 2.18627 - loss:21436.8 1.26564
+Time of user_update: 1.04412
+Time of item_update: 1.14509
+Iter=36 2.18922 - loss:21295.9 1.26558
+Time of user_update: 1.04352
+Time of item_update: 1.14541
+Iter=37 2.18893 - loss:21162 1.26698
+Time of user_update: 1.04116
+Time of item_update: 1.14506
+Iter=38 2.18622 - loss:21034.7 1.26731
+Time of user_update: 1.04226
+Time of item_update: 1.14502
+Iter=39 2.18728 - loss:20913.5 1.26641
+Time of user_update: 1.04333
+Time of item_update: 1.14565
+Iter=40 2.18898 - loss:20797.9 1.26473
+Time of user_update: 1.04469
+Time of item_update: 1.14468
+Iter=41 2.18938 - loss:20687.6 1.26638
+Time of user_update: 1.04266
+Time of item_update: 1.14675
+Iter=42 2.18941 - loss:20582.2 1.26661
+Time of user_update: 1.04219
+Time of item_update: 1.14661
+Iter=43 2.18879 - loss:20481.3 1.26702
+Time of user_update: 1.04116
+Time of item_update: 1.14327
+Iter=44 2.18443 - loss:20384.7 1.2674
+Time of user_update: 1.04469
+Time of item_update: 1.14326
+Iter=45 2.18795 - loss:20292 1.26579
+Time of user_update: 1.04365
+Time of item_update: 1.14567
+Iter=46 2.18932 - loss:20203.1 1.26704
+Time of user_update: 1.04234
+Time of item_update: 1.14516
+Iter=47 2.1875 - loss:20117.8 1.26608
+Time of user_update: 1.04349
+Time of item_update: 1.14433
+Iter=48 2.18782 - loss:20035.7 1.26836
+Time of user_update: 1.04242
+Time of item_update: 1.14346
+Iter=49 2.18587 - loss:19956.8 1.26795
