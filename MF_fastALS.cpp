@@ -1,5 +1,5 @@
 #include "omp.h"
-#include"MF_fastALS.h"
+#include "MF_fastALS.h"
 #include <math.h>
 #include <vector>
 #include <float.h>
@@ -11,11 +11,14 @@
 #include <algorithm>
 #include <functional>
 #include <time.h>
+#include <immintrin.h>
 #include "DenseVec.h"
 #include "DenseMat.h"
 #include "SparseVec.h"
 #include "SparseMat.h"
 #include "Rating.h"
+
+#define NUM_DOUBLE 8
 
 /*
 using namespace Eigen;
@@ -207,15 +210,16 @@ double MF_fastALS::loss() {
 
 double MF_fastALS::predict(int u, int i) {
 	
-//	clock_t start = clock();
-	//MatrixXd u_temp = U.getData();
-  //std::cout << "Time of 181: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
-	//MatrixXd v_temp = V.getData();
- // std::cout << "Time of 183: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
- //double res =  u_temp.row(u) * v_temp.row(i).transpose();
- double res =  U.row_fal(u).inner(V.row_fal(i));
- //std::cout << "Time of 185: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+  double * u_tmp = U.matrix[u];
+ double * v_tmp = V.matrix[i];
+ double res = 0;
+ //int len = U.numColumns;
+ for(int k=0; k<factors; k++){
+  res += (*(u_tmp+k)) * (*(v_tmp+k));
+ }
+
 	return res;
+
 }
 
 void MF_fastALS::updateModel(int u, int i) {
@@ -240,36 +244,36 @@ void MF_fastALS::updateModel(int u, int i) {
   }
 void MF_fastALS::update_user_thread(int u){
     
-    std::vector<int> itemList;
-		itemList = trainMatrix.getRowRef(u).indexList();
+    int *itemList;
+		itemList = trainMatrix.rows[u].spv_in;
+		int size_item = trainMatrix.rows[u].n;
+		int size_avx = size_item / NUM_DOUBLE;
+		int remain = size_item % NUM_DOUBLE;
+		long long * itemL = new long long[size_item];
+		for (int i=0; i<size_item; i++)
+		  itemL[i] = (long long)itemList[i];
    // int res = itemList.size();
     //clock_t start = clock();
-    if (itemList.size() == 0)        return ;    // user has no ratings
-    
+    if (size_item == 0)        return ;    // user has no ratings
+    int i;
     //double *prediction_items = new double[itemCount];
     //double *rating_items = new double[itemCount]; 
    // double *w_items = new double[itemCount]; 
-
-    // prediction cache for the user
     
+    //one column of the V matrix
+    double * v_col = new double[size_item];
 
-  //  std::cout << "Time of 213: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
-    //std::cout << itemList.size() << std::endl;
-    //#pragma omp parallel for 
-    for (int i : itemList) {
-      //start = clock();
+    // prediction cache for the user 
+    for (int j = 0; j < size_item; j++) {
+      i = itemList[j];
       prediction_items[i] = predict(u, i);
-    //start = clock();
-      //std::cout << "Time of 218: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
       rating_items[i] = trainMatrix.getValue(u, i);
-      //std::cout << "Time of 220: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
-      w_items[i] = W.getValue(u, i);
-      //std::cout << "Time of 222: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+      w_items[i] = W.getValue(u,i);
     }
-    //std::cout << "217" << std::endl;
-    //std::cout << "Time of 245: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
+
     //DenseVec oldVector = U.row(u);
       double *uget = U.matrix[u];
+      double *numer_tmp = new double[NUM_DOUBLE];
       //double *vget = V.matrix[u];
     for (int f = 0; f < factors; f++) {
       double numer = 0, denom = 0;
@@ -279,10 +283,31 @@ void MF_fastALS::update_user_thread(int u){
     //  #pragma omp for reduction(-:numer)
       //double *uget = U.matrix[u];
       double *svget = SV.matrix[f];
-      for (int k = 0; k < factors; k++) {
-        if (k != f)
-          numer -= (*(uget+k)) * (*(svget+k));
+
+      for(int j = 0; j<size_item; j++){
+        i = itemList[j];
+        v_col[j] = V.matrix[i][f];
       }
+
+      //simd vectorization
+     // double *numer_tmp = new double[NUM_DOUBLE];
+      _mm512_store_pd(numer_tmp, _mm512_setzero_pd ());
+
+      for (int k = 0; k < factors; k+=NUM_DOUBLE) {
+          //numer -= (*(uget+k)) * (*(svget+k));
+          __m512d uget_k = _mm512_load_pd(uget + k);
+          __m512d svget_k = _mm512_load_pd(svget + k);
+          __m512d num = _mm512_load_pd(numer_tmp);
+          __m512d tmp_mul = _mm512_mul_pd(uget_k, svget_k);
+          __m512d tmp_add = _mm512_add_pd(num, tmp_mul);
+          _mm512_store_pd(numer_tmp, tmp_add);
+      }
+
+      for(int k=0; k<NUM_DOUBLE; k++){
+        numer -= numer_tmp[k];
+      }
+
+      numer += (*(uget+f)) * (*(svget+f));
      // }
       //numer *= w0;
       // O(Nu) complexity for the positive part
@@ -292,8 +317,9 @@ void MF_fastALS::update_user_thread(int u){
      // {
      // #pragma omp for reduction(+:numer2) reduction(+:denom)
       double ufget = U.matrix[u][f];
-      for (int i : itemList) {
-        double ifv = V.matrix[i][f];
+      for (int j = 0; j<size_item; j++) {
+        i = itemList[j];
+        double ifv = *(v_col+j);
         prediction_items[i] -= ufget * ifv;
         numer += (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]) * ifv;
         //int x =  (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]);
@@ -306,17 +332,38 @@ void MF_fastALS::update_user_thread(int u){
       
       // Parameter Update
       (*(uget+f)) = numer / denom;
-
+      double tmp_uget = numer / denom;
+     // std::cout<<"336"<<std::endl;
       // Update the prediction cache
 //      #pragma omp parallel for shared(prediction_items)  
-      for (int i : itemList)
-        prediction_items[i] +=  (*(uget+f)) * V.matrix[i][f];
+      for (int j = 0; j<size_avx; j+=NUM_DOUBLE){
+       // i = itemList[j];
+       // prediction_items[i] += tmp_uget * v_col[j];
+        
+        __m512i i_avx = _mm512_load_epi64(itemL + j);
+        __m512d uget_avx = _mm512_set1_pd(tmp_uget);
+        __m512d vcol_avx = _mm512_load_pd(v_col + j);
+        __m512d tmp_mul = _mm512_mul_pd(uget_avx, vcol_avx);
+        //std::cout<<"347"<<endl;
+        __m512d pre_avx = _mm512_i64gather_pd(i_avx, prediction_items, sizeof(double));
+        //cout<<"349"<<endl;
+        __m512d sum_avx = _mm512_add_pd(tmp_mul, pre_avx);
+       // std::cout<<"350"<<endl;
+        _mm512_i64scatter_pd(prediction_items, i_avx, sum_avx, sizeof(double));
+        
+      }
+     // std::cout<<"352"<<std::endl;
+      for (int j = size_avx; j<size_item; j++){
+        i = itemList[j];                                                      
+        prediction_items[i] += tmp_uget * v_col[j];
+      }
     } // end for f
 
     //delete [] prediction_items;
     //delete [] rating_items;
     //delete [] w_items;
-
+    delete [] numer_tmp;
+    delete [] itemL;
 }
 
 void MF_fastALS::update_user_SU(double *oldVector, double *uget){
