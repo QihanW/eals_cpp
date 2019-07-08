@@ -37,7 +37,7 @@ int main(){
       sum -= numer[k];
     //cout<<numer[k]<<endl;
   }
-  cout<<sum<<endl;*/
+  cout<<sum<<endl;
 
   long long *itemList = new long long[64];
   double *prediction_items = new double[64];
@@ -46,9 +46,9 @@ int main(){
   double tmp_uget = 10;
   int j;
   int sum = 0;
-for (int i=0; i<24; i++)
+for (int i=0; i<29; i++)
   itemList[i] = i*2;
-for (int i=24; i<64; i++)
+for (int i=29; i<64; i++)
   itemList[i] = i-19;
   for (int i=0; i<64; i++){                                                     
        
@@ -73,23 +73,22 @@ for (int i=24; i<64; i++)
   
 
   
-  for (int k=0; k<64; k+=NUM_DOUBLE){ 
-    __m512i i_avx = _mm512_load_epi64(itemList + k);
-    __m512d uget_avx = _mm512_set1_pd(tmp_uget);
-    __m512d vcol_avx = _mm512_load_pd(v_col + k);
-    __m512d tmp_mul = _mm512_mul_pd(uget_avx, vcol_avx);
-    //_mm512_i64scatter_pd(prediction_items, i_avx, tmp_mul, sizeof(double)); 
-    __m512d pre_avx = _mm512_i64gather_pd(i_avx, prediction_items, sizeof(double));
-    __m512d sum_avx = _mm512_add_pd(tmp_mul, pre_avx);
-    _mm512_i64scatter_pd(prediction_items, i_avx, sum_avx, sizeof(double));
-    //cout<<prediction_items[k]<<endl;
-  }
+  for (int j=0; j<64; j+=NUM_DOUBLE){                                 
+ __m512i i_avx = _mm512_load_epi64(itemList + j);                           
+ __m512d vcol_avx = _mm512_load_pd(v_col + j);                           
+ __m512d tmp_mul = _mm512_mul_pd(_mm512_set1_pd(tmp_uget), vcol_avx);    
+__m512d pre_avx = _mm512_i64gather_pd(i_avx, prediction_items, sizeof(double));
+ __m512d sum_avx = _mm512_add_pd(tmp_mul, pre_avx);                      
+ _mm512_i64scatter_pd(prediction_items, i_avx, sum_avx, sizeof(double)); 
+  }  
   
 
   for(int i=0; i<64; i++){
-//    if ( prediction_items[i] != 10)
+    if ( prediction_items[i] = pre1[i])
     //  cout<<prediction_items[i]<<endl;
-     cout<<i<<"correct: "<<pre1[i]<<" simd: "<<prediction_items[i]<<endl;
+     cout<<i<<" correct"<<endl;
+    else
+      cout<<i<<" wrong"<<endl;
   }
   
   //cout<<sum<<endl;
@@ -98,6 +97,30 @@ for (int i=24; i<64; i++)
   delete [] prediction_items;
   delete [] v_col;
   delete [] pre1;
-  delete [] x;
+  delete [] x; */
+
+
+
+  double a[64];
+  double b[64];
+  double mius = -1;
+  for (int i=0; i<64; i++){
+    a[i] = 1;
+    b[i] = 2;
+  }
+  for (int j=0; j<64; j+=NUM_DOUBLE){
+    __m512d uget_k = _mm512_load_pd(a + j);
+    __m512d min = _mm512_set1_pd(mius);
+    __m512d tmp_mul = _mm512_mul_pd(min, uget_k);
+    _mm512_store_pd(b + j, tmp_mul);
+  }
+
+  for(int i=0; i<64; i++)
+    cout<<b[i]<<endl;
+
+
+
+
+
 
 }
