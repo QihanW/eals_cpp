@@ -311,6 +311,8 @@ void MF_fastALS::update_user_thread(int u){
 
       for(int k=0; k<NUM_DOUBLE; k++){
         numer -= numer_tmp[k];
+          //__m512d svget_k = _mm512_load_pd(svget + k);
+          //_mm512_store_pd(numer_tmp, tmp_add);
       }
 
       numer += (*(uget+f)) * (*(svget+f));
@@ -348,9 +350,13 @@ void MF_fastALS::update_user_thread(int u){
           
       }
      
-      for(int j=0; j<size_avx; j++)
-        prediction_items[j] = test[j];
-      
+      for(int j=0; j<size_avx; j+=NUM_DOUBLE)
+      { 
+        //prediction_items[j] = test[j];
+        __m512d test_avx = _mm512_load_pd(test + j);
+        _mm512_store_pd(prediction_items + j, test_avx);
+      }
+
       for(int j=size_avx; j<size_item; j++){
           ifv = *(v_col+j);                                                       
           //prediction_items[j] -= ufget * ifv;        
@@ -400,7 +406,12 @@ void MF_fastALS::update_user_thread(int u){
       
       for (int j=0; j<size_avx; j++)
         //test[j] = prediction_items[j];
-        prediction_items[j] = test[j];
+        //prediction_items[j] = test[j];
+    {
+          prediction_items[j] = test[j];
+         //__m512d test_avx = _mm512_load_pd(test + j);
+         //_mm512_store_pd(prediction_items + j, test_avx);
+       }
       
       for (int j = size_avx; j<size_item; j++){                                                      
         prediction_items[j] += tmp_uget * v_col[j];
@@ -443,6 +454,7 @@ void  MF_fastALS::update_item_thread(int i){
     // prediction cache for the item
    //  std::cout << "Time of 286: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
     int u;
+    int wii = Wi[i];
     double pp[size_user];
     double rr[size_user];
     double ww[size_user];
@@ -478,9 +490,10 @@ void  MF_fastALS::update_item_thread(int i){
       
       for(int j = 0; j<size_user; j++){
         u = userList[j];
-        u_col[j] = U.matrix[j][f];
+        u_col[j] = U.matrix[u][f];
       }
-
+      
+      
       _mm512_store_pd(numer_tmp, _mm512_setzero_pd ());
 
       for (int k = 0; k < factors; k+=NUM_DOUBLE) {
@@ -501,13 +514,21 @@ void  MF_fastALS::update_item_thread(int i){
 
       numer += (*(vget+f)) * (*(suget+f));
       
+      /*
+      for (int k = 0; k < factors; k++) {
+        if (k != f)
+          //numer -= V.get(i, k) * SU.get(f, k);
+          numer -= (*(vget+k)) * (*(suget+k));
+      }
+      */
       numer *= Wi[i];
 
      // std::cout << "Time of 312: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
       // O(Ni) complexity for the positive ratings part
       double ifget = V.matrix[i][f];
       double mius = -1;
-
+      
+      /*
       for (int j=0; j<size_avx; j+=NUM_DOUBLE){
         __m512d uget_avx = _mm512_set1_pd(ifget); 
         __m512d uget_avx2 = _mm512_set1_pd(mius); 
@@ -526,13 +547,14 @@ void  MF_fastALS::update_item_thread(int i){
           ifu = *(u_col+j);
           prediction_users[j] -= ifget * ifu;
       }
+      */
 
       for (int j=0; j<size_user; j++) {
         u = userList[j];
         ifu = *(u_col+j);
-       // prediction_users[u] -= ufu * ifv;
-        numer += (w_users[j] * rating_users[j] - (w_users[j] - Wi[u]) * prediction_users[j]) * ifu;
-        denom += (w_users[j] - Wi[i]) * ifu * ifu;
+        prediction_users[j] -= ifu * ifget;
+        numer += (w_users[j] * rating_users[j] - (w_users[j] - wii) * prediction_users[j]) * ifu;
+        denom += (w_users[j] - wii) * ifu * ifu;
       }
       denom += Wi[i] * (*(suget+f)) + reg;
 
@@ -542,7 +564,7 @@ void  MF_fastALS::update_item_thread(int i){
       // Update the prediction cache for the item
       (*(vget+f)) = numer / denom;
       double tmp_vget = numer / denom;
-
+      
       for (int j=0; j<size_avx; j+=NUM_DOUBLE){
         __m512d uget_avx = _mm512_set1_pd(tmp_vget);
         __m512d vcol_avx = _mm512_load_pd(u_col + j);
@@ -558,6 +580,9 @@ void  MF_fastALS::update_item_thread(int i){
       for (int j = size_avx; j<size_user; j++){
          prediction_users[j] += tmp_vget * u_col[j];
       }
+
+      //for(int j=0; j<size_user; j++)
+      //  prediction_users[j] += tmp_vget * u_col[j];
       //for (int u : userList)
 
         //  prediction_users[u] +=  U.matrix[u][f] * (*(vget+f)) ;
