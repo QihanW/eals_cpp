@@ -125,15 +125,16 @@ void MF_fastALS::buildModel() {
         u_clone.matrix[i][j] = U.matrix[i][j];
       }
     }
-		clock_t start = clock();
+		double start = omp_get_wtime();
     //#pragma omp parallel for schedule(static, 128) private(prediction_users, rating_users, w_users, V,U)
+		#pragma omp parallel for  shared(trainMatrix, W, U, SV, V, Wi)
 		for (int u = 0; u < userCount; u++) {
 			update_user_thread(u);  
 		}
     for (int u = 0; u < userCount; u++){
       update_user_SU(u_clone.matrix[u], U.matrix[u]);
     }
-    double time_user_update = (double)(clock() - start)/CLOCKS_PER_SEC;
+    double time_user_update = omp_get_wtime() - start;
 		std::cout << "Time of user_update: " <<time_user_update<< std::endl;
     //std::cout << "User list size: "<<user_list;
 		// Update item latent vectors
@@ -145,7 +146,8 @@ void MF_fastALS::buildModel() {
      }
 	  
 	  
-	  start = clock();
+	  start = omp_get_wtime();
+		#pragma omp parallel for  shared(trainMatrix, W, U, SU, V, Wi)
 		for (int i = 0; i < itemCount; i++) {
       update_item_thread(i);
      // std::cout << i << std::endl;
@@ -154,7 +156,7 @@ void MF_fastALS::buildModel() {
       update_item_SV(i, v_clone.matrix[i], V.matrix[i]);
     }
       
-    double time_item_update = (double)(clock() - start)/CLOCKS_PER_SEC;
+    double time_item_update = omp_get_wtime() - start;;
     std::cout << "Time of item_update: " << time_item_update << std::endl;
 		// Show loss
 		if (showloss)
@@ -242,6 +244,8 @@ void MF_fastALS::updateModel(int u, int i) {
       update_item_thread(i);
     }
   }
+
+
 void MF_fastALS::update_user_thread(int u){
     
     double ifv; 
@@ -256,15 +260,15 @@ void MF_fastALS::update_user_thread(int u){
     if (size_item == 0)        return ;    // user has no ratings
     int i;
     
-    double pp[size_item];
-    double rr[size_item];
-    double ww[size_item];
+    //double pp[size_item];
+    //double rr[size_item];
+    //double ww[size_item];
     
     double test[size_avx];
 
-    prediction_items = pp;
-    rating_items = rr; 
-    w_items = ww; 
+    double *prediction_items = new double[size_item];
+    double *rating_items = new double[size_item]; 
+    double *w_items = new double[size_item]; 
     
     //one column of the V matrix
     double *v_col = new double[size_item];
@@ -418,9 +422,9 @@ void MF_fastALS::update_user_thread(int u){
       }
     } // end for f
 
-    //delete [] prediction_items;
-    //delete [] rating_items;
-    //delete [] w_items;
+    delete [] prediction_items;
+    delete [] rating_items;
+    delete [] w_items;
     delete [] numer_tmp;
     //delete [] itemL;
     delete [] v_col;
@@ -455,15 +459,15 @@ void  MF_fastALS::update_item_thread(int i){
    //  std::cout << "Time of 286: " <<(double)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
     int u;
     int wii = Wi[i];
-    double pp[size_user];
-    double rr[size_user];
-    double ww[size_user];
+   // double pp[size_user];
+    //double rr[size_user];
+    //double ww[size_user];
 
     double test[size_avx];
 
-    prediction_users = pp;
-    rating_users = rr;
-    w_users = ww;
+    double *prediction_users = new double[size_user];
+    double *rating_users = new double[size_user];
+    double *w_users = new double[size_user];
 
     double *u_col = new double[size_user];
 
@@ -553,8 +557,8 @@ void  MF_fastALS::update_item_thread(int i){
         u = userList[j];
         ifu = *(u_col+j);
         prediction_users[j] -= ifu * ifget;
-        numer += (w_users[j] * rating_users[j] - (w_users[j] - wii) * prediction_users[j]) * ifu;
-        denom += (w_users[j] - wii) * ifu * ifu;
+        numer += (w_users[j] * rating_users[j] - (w_users[j] - Wi[i]) * prediction_users[j]) * ifu;
+        denom += (w_users[j] - Wi[i]) * ifu * ifu;
       }
       denom += Wi[i] * (*(suget+f)) + reg;
 
@@ -588,9 +592,9 @@ void  MF_fastALS::update_item_thread(int i){
         //  prediction_users[u] +=  U.matrix[u][f] * (*(vget+f)) ;
     } // end for f
 
-   //delete [] prediction_users;
-   //delete [] rating_users;
-   //delete [] w_users;
+   delete [] prediction_users;
+   delete [] rating_users;
+   delete [] w_users;
     delete [] u_col;
     delete [] numer_tmp;
 }
