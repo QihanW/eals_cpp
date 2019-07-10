@@ -300,7 +300,7 @@ void MF_fastALS::update_user_thread(int u){
       }
 
       //simd vectorization
-     // double *numer_tmp = new double[NUM_DOUBLE];
+      //double *numer_tmp = new double[NUM_DOUBLE];
       _mm512_store_pd(numer_tmp, _mm512_setzero_pd ());
 
       for (int k = 0; k < factors; k+=NUM_DOUBLE) {
@@ -330,7 +330,7 @@ void MF_fastALS::update_user_thread(int u){
      // #pragma omp for reduction(+:numer2) reduction(+:denom)
       double ufget = U.matrix[u][f];
       double mius = -1;
-      
+      /*
       for (int j=0; j<size_avx; j+=NUM_DOUBLE){
          /*
           __m512d uget_avx = _mm512_set1_pd(ufget);
@@ -343,7 +343,7 @@ void MF_fastALS::update_user_thread(int u){
           
            ifv = *(v_col+j);
           prediction_items[j] -= ufget * ifv;*/
-        __m512d uget_avx = _mm512_set1_pd(ufget);
+        /*__m512d uget_avx = _mm512_set1_pd(ufget);
         __m512d uget_avx2 = _mm512_set1_pd(mius);
         __m512d vcol_avx = _mm512_load_pd(v_col + j);
         __m512d tmp_mul = _mm512_mul_pd(uget_avx, vcol_avx);
@@ -366,12 +366,12 @@ void MF_fastALS::update_user_thread(int u){
           //prediction_items[j] -= ufget * ifv;        
           prediction_items[j] -= ufget * ifv;        
       }
-      
+      */
 
       for (int j = 0; j<size_item; j++) {
         i = itemList[j];
         ifv = *(v_col+j);
-       // prediction_items[j] -= ufget * ifv;
+        prediction_items[j] -= ufget * ifv;
         numer += (w_items[j] * rating_items[j] - (w_items[j] - Wi[i]) * prediction_items[j]) * ifv;
         //int x =  (w_items[i] * rating_items[i] - (w_items[i] - Wi[i]) * prediction_items[i]);
         //numer += x * V.get(i,f);
