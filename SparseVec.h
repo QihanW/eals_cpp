@@ -7,16 +7,16 @@
 
 using namespace std;
 
-//typedef SparseVector<double> SpVec;
+//typedef SparseVector<float> SpVec;
 
 class SparseVec {
 public:
 	SparseVec();
 	SparseVec(int num);
 	//SparseVec(SpVec sv);
-	void setValue(int i, double value);
+	void setValue(int i, float value);
 	void setVector(SparseVec newVector);
-	double getValue(int i);
+	float getValue(int i);
 	void setLength(int num);
 	int itemCount();
 	SparseVec getVector();
@@ -24,6 +24,6 @@ public:
 	int n;
 	int current;
 	int *spv_in;
-	double *spv_do;
+	float *spv_do;
 };
 #endif // !SPARSE_VECTO#R_H

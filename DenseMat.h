@@ -9,19 +9,19 @@ using namespace std;
 
 class DenseMat {
 public:
-	//double[][] metric;
-	double ** matrix;
+	//float[][] metric;
+	float ** matrix;
 	DenseMat();
 	DenseMat(int numRows, int numColumns);
-	DenseMat(double ** mat);
+	DenseMat(float ** mat);
 //	DenseMat(DenseMat mat);
 	DenseMat clone();
-	void init(double mean, double sigma);
-	void init(double range);
+	void init(float mean, float sigma);
+	void init(float range);
 	void init();
-	void set(int row, int column, double val);
-	double get(int row, int column);
-	double squaredSum();
+	void set(int row, int column, float val);
+	float get(int row, int column);
+	float squaredSum();
 	DenseMat transpose();
 	DenseVec row(int rowId);
 	DenseVec row_fal(int rowId);

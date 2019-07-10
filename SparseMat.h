@@ -8,9 +8,9 @@
 
 using namespace std;
 /*
-typedef SparseVector<double> SpVec;
-typedef SparseMatrix<double> SpMat;
-typedef SparseMatrix<double, RowMajor> SpMat_R;
+typedef SparseVector<float> SpVec;
+typedef SparseMatrix<float> SpMat;
+typedef SparseMatrix<float, RowMajor> SpMat_R;
 */
 class SparseMat {
 public:
@@ -18,12 +18,12 @@ public:
 	SparseMat(int r, int c);
 	//SparseMat(SparseMat newMat);
 
-	void setValue(int i, int j, double value);
-	//void setValueC(int i, int j, double value);
-	//void setValueR(int i, int j, double value);
+	void setValue(int i, int j, float value);
+	//void setValueC(int i, int j, float value);
+	//void setValueR(int i, int j, float value);
 
-	//double getValueC(int i, int j);
-	//double getValueR(int i, int j);
+	//float getValueC(int i, int j);
+	//float getValueR(int i, int j);
 
 	//void setMatC(SpMat matc);
 	void setSize(int m, int n);
@@ -32,7 +32,7 @@ public:
 	
 	SparseVec getColRef(int index);
 	
-  double getValue(int r, int c);
+  float getValue(int r, int c);
   int itemCount();
 
 	int n_r;

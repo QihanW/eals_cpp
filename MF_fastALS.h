@@ -18,15 +18,15 @@ public:
 
 	int factors = 10; 	// number of latent factors.
 	int maxIter = 500; 	// maximum iterations.
-	double reg = 0.01; 	// regularization parameters
-	double w0 = 1;
-	double init_mean = 0;  // Gaussian mean for init V
-	double init_stdev = 0.01; // Gaussian std-dev for init V
+	float reg = 0.01; 	// regularization parameters
+	float w0 = 1;
+	float init_mean = 0;  // Gaussian mean for init V
+	float init_stdev = 0.01; // Gaussian std-dev for init V
 	int itemCount;
 	int userCount;
 	int topK;
-	double alpha;
-	double w_new = 1; // weight of new instance in online learning
+	float alpha;
+	float w_new = 1; // weight of new instance in online learning
 
 	DenseMat U; // latent vectors for users
 	DenseMat V;	// latent vectors for items
@@ -37,38 +37,39 @@ public:
 	SparseMat W;  // weight for each positive instance in trainMatrix
 
 	std::vector<Rating> testRatings;
-	//double * prediction_users;
-	//double * prediction_items;
-  //double * rating_users;
-  //double *rating_items;
-	//double * w_users; 
-	//double * w_items;
-	double * Wi; // weight for negative instances on item i.
-
+	//float * prediction_users;
+	//float * prediction_items;
+  //float * rating_users;
+  //float *rating_items;
+	//float * w_users; 
+	//float * w_items;
+	float * Wi; // weight for negative instances on item i.
+  float su_one[256];                                              
+  float sv_one[256]; 
 	bool showprogress;
 	bool showloss;
 	
 
 	MF_fastALS(SparseMat trainMatrix, std::vector<Rating> testRatings,
-		int topK, int threadNum, int factors, int maxIter, double w0, double alpha, double reg,
-		double init_mean, double init_stdev, bool showProgress, bool showLoss, int userCount,
+		int topK, int threadNum, int factors, int maxIter, float w0, float alpha, float reg,
+		float init_mean, float init_stdev, bool showProgress, bool showLoss, int userCount,
 		int itemCount);
 	void setTrain(SparseMat trainMatrix);
 	void setUV(DenseMat U, DenseMat V);
 	void buildModel();
 	void runOneIteration();
-	double showLoss(int iter, double time, double loss_pre);
-	double loss();
-	double predict(int u, int i);
+	float showLoss(int iter, float time, float loss_pre);
+	float loss();
+	float predict(int u, int i);
 	void updateModel(int u, int i);
-	double getHitRatio(std::vector<int> rankList, int gtItem);
-	double getNDCG(std::vector<int> rankList, int gtItem);
-	double getPrecision(std::vector<int> rankList, int gtItem);
-	std::vector<double> evaluate_for_user(int u, int gtItem, int topK);
+	float getHitRatio(std::vector<int> rankList, int gtItem);
+	float getNDCG(std::vector<int> rankList, int gtItem);
+	float getPrecision(std::vector<int> rankList, int gtItem);
+	std::vector<float> evaluate_for_user(int u, int gtItem, int topK);
 	void update_user_thread(int u);
-	void update_user_SU(double *oldVector, double *uget);
+	void update_user_SU(float *oldVector, float *uget);
 	void update_item_thread(int i);
-	void update_item_SV(int i, double *oldVector, double *vget);
+	void update_item_SV(int i, float *oldVector, float *vget);
 	~MF_fastALS();
 
 protected: 

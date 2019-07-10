@@ -14,18 +14,18 @@ DenseMat::DenseMat() {
 DenseMat::DenseMat(int numRows, int numColumns) {
 	this->numColumns = numColumns;
 	this->numRows = numRows;
-	this->matrix = new double*[numRows];
+	this->matrix = new float*[numRows];
 	for (int i=0; i<numRows; i++){
-    this->matrix[i] = new double[numColumns];
+    this->matrix[i] = new float[numColumns];
   }
 }
 
-DenseMat::DenseMat(double ** mat) {
+DenseMat::DenseMat(float ** mat) {
 	this->numRows = sizeof(mat)/sizeof(mat[0]);                                                
-  this->numColumns = sizeof(mat[0])/sizeof(double);
-	this->matrix = new double*[this->numRows];                                          
+  this->numColumns = sizeof(mat[0])/sizeof(float);
+	this->matrix = new float*[this->numRows];                                          
   for (int i=0; i<this->numRows; i++){                                                
-       this->matrix[i] = new double[numColumns];                                   
+       this->matrix[i] = new float[numColumns];                                   
    }
   for(int i=0; i<this->numRows; i++){
     for (int j=0; j<this->numColumns; j++){
@@ -51,9 +51,9 @@ DenseMat DenseMat::clone() {
 	return mat;
 }
 
-void DenseMat::init(double mean, double sigma) {
+void DenseMat::init(float mean, float sigma) {
 	std::default_random_engine generator;
-	std::normal_distribution<double> distribution(mean, sigma);
+	std::normal_distribution<float> distribution(mean, sigma);
 	for (int i = 0; i < numRows; i++) {
 		for (int j = 0; j < numColumns; j++) {
 			this->matrix[i][j] = distribution(generator);
@@ -61,9 +61,9 @@ void DenseMat::init(double mean, double sigma) {
 	}
 }
 
-void DenseMat::init(double range) {
+void DenseMat::init(float range) {
 	std::default_random_engine generator;
-	std::uniform_real_distribution<double> distribution(0.0, range);
+	std::uniform_real_distribution<float> distribution(0.0, range);
 	for (int i = 0; i < numRows; i++) {
 		for (int j = 0; j < numColumns; j++) {
 			this->matrix[i][j] = distribution(generator);
@@ -75,16 +75,16 @@ void DenseMat::init() {
 	init(1.0);
 }
 
-void DenseMat::set(int row, int column, double val) {
+void DenseMat::set(int row, int column, float val) {
 	this->matrix[row][column] = val;
 }
 
-double DenseMat::get(int row, int column) {
+float DenseMat::get(int row, int column) {
 	return *((*(this->matrix+row))+column);
 }
 
-double DenseMat::squaredSum() {
-	double res = 0;
+float DenseMat::squaredSum() {
+	float res = 0;
   for (int i = 0; i < this-> numRows; i++)
     for (int j = 0; j < this->numColumns; j++)
       res += matrix[i][j] * matrix[i][j];
@@ -127,7 +127,7 @@ DenseMat DenseMat::mult(DenseMat mat){
 		for (int i = 0; i < res.numRows; i++) {
 			for (int j = 0; j < res.numColumns; j++) {
 
-				double product = 0;
+				float product = 0;
 				for (int k = 0; k < this->numColumns; k++)
 					product += matrix[i][k] * mat.matrix[k][j];
 

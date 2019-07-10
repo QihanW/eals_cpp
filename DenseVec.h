@@ -10,20 +10,20 @@ using namespace std;
 class DenseVec {
 public: 
 	DenseVec(int size);
-	DenseVec(double* data);
+	DenseVec(float* data);
 	//DenseVec(vector<double> data);
-	DenseVec(double* data, bool judge);
+	DenseVec(float* data, bool judge);
 	//DenseVec(DenseVec vec);
 	DenseVec clone();
-	void init(double mean, double sigma);
+	void init(float mean, float sigma);
 	void init();
-	void set(int idx, double val);
-	double get(int idx);
+	void set(int idx, float val);
+	float get(int idx);
 	int getSize();
-	double inner(DenseVec vec);
+	float inner(DenseVec vec);
   ~DenseVec();
 
-	double* vect;
+	float* vect;
 	int size;
 };
 

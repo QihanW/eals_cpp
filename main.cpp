@@ -18,10 +18,10 @@
 #include "DenseVec.h"
 /*
 using namespace Eigen;
-typedef SparseMatrix<double> SpMat;
-typedef SparseMatrix<double, RowMajor> SpMat_R;
+typedef SparseMatrix<float> SpMat;
+typedef SparseMatrix<float, RowMajor> SpMat_R;
 typedef Triplet<int> T;
-typedef Matrix<double, Dynamic, 1> VectorXd;
+typedef Matrix<float, Dynamic, 1> VectorXd;
 */
 
 int topK = 10;
@@ -35,16 +35,16 @@ int item_id;
 bool LessSort(Rating a, Rating b) { return(a.timestamp < b.timestamp); }
 
 void evaluate_model(MF_fastALS fals, std::vector<Rating> testRatings){
-  std::vector<double> hits;
-  std::vector<double> ndcgs;
-  std::vector<double> precs;
+  std::vector<float> hits;
+  std::vector<float> ndcgs;
+  std::vector<float> precs;
 
 	hits.resize(userCount);
 	ndcgs.resize(userCount);
 	precs .resize(userCount);
 	//begin evaluation
 	for (int u = 0; u < userCount; u++) {
-		std::vector<double> result(3);
+		std::vector<float> result(3);
 		int gtItem = testRatings[u].itemId;
 		result = fals.evaluate_for_user(u, gtItem, topK);
 		hits[u] = result[0];
@@ -52,7 +52,7 @@ void evaluate_model(MF_fastALS fals, std::vector<Rating> testRatings){
 		precs[u] = result[2];
 
 	}
-	double res[3];
+	float res[3];
 	//    VectorXd hits;
 	//    VectorXd ndcgs;
 	//    VectorXd precs;
@@ -123,7 +123,7 @@ std::vector<std::vector<Rating>> ReadRatings_HoldOneOut(std::string dir) {
 		sort(user_ratings[u].begin(), user_ratings[u].end(), LessSort);
 	}
 	clock_t end = clock();
-	std::cout << "Sorting time:" << (double)(end - start) / CLOCKS_PER_SEC << std::endl;
+	std::cout << "Sorting time:" << (float)(end - start) / CLOCKS_PER_SEC << std::endl;
 
 	fin.close();
 	return user_ratings;
@@ -132,15 +132,15 @@ std::vector<std::vector<Rating>> ReadRatings_HoldOneOut(std::string dir) {
 int main(int argc, const char * argv[]) {
 	std::string dataset_name = "yelp.rating";
 	std::string method = "FastALS";
-	double w0 = 10;
+	float w0 = 10;
 	bool showProgress = false;
 	bool showLoss = true;
 	int factors = 64;
 	int maxIter = 50;
-	double reg = 0.01;
-	double alpha = 0.75;
-	double init_mean = 0; 
-	double init_stdev = 0.01;
+	float reg = 0.01;
+	float alpha = 0.75;
+	float init_mean = 0; 
+	float init_stdev = 0.01;
 	int threadNum = 1;
 	/*
 	if (argc > 0) {
@@ -165,9 +165,9 @@ int main(int argc, const char * argv[]) {
 	SparseMat trainMatrix(userCount, itemCount);
   
   int num = 0;
-  vector<map<int, double>> user_no_repeat;
+  vector<map<int, float>> user_no_repeat;
   user_no_repeat.resize(userCount);
-  vector<map<int, double>> item_no_repeat;
+  vector<map<int, float>> item_no_repeat;
   item_no_repeat.resize(itemCount);
 	//std::vector<T> tripletList;
 	for (int u = 0; u < userCount; u++) {
@@ -181,8 +181,8 @@ int main(int argc, const char * argv[]) {
 			else { // train
 				//num++;
 				//trainMatrix.setValue(user_id, item_id, 1);
-        user_no_repeat[user_id].insert(pair<int, double>(item_id, 1));
-        item_no_repeat[item_id].insert(pair<int, double>(user_id, 1));
+        user_no_repeat[user_id].insert(pair<int, float>(item_id, 1));
+        item_no_repeat[item_id].insert(pair<int, float>(user_id, 1));
 			}
 			//                trainMatrix.insert(user_id, item_id) =  1;
 		}
@@ -196,7 +196,7 @@ int main(int argc, const char * argv[]) {
     trainMatrix.cols[i].setLength(item_no_repeat[i].size());
   }
   for (int u = 0; u < userCount; u++) {
-    map<int, double>::iterator iter;
+    map<int, float>::iterator iter;
     //int len = user_no_repeat[u].size();
     for(iter = user_no_repeat[u].begin(); iter != user_no_repeat[u].end(); iter++){
        trainMatrix.setValue(u, iter->first, iter->second );
@@ -212,7 +212,7 @@ int main(int argc, const char * argv[]) {
   std::cout<<"Num of elements: "<<num<<std::endl;
   //std::cout << trainMatrix.rows.size()<<endl;
 	//    trainMatrix.makeCompressed();
-	std::cout << "Generated splitted matrices time:" << (double)(clock() - start) / CLOCKS_PER_SEC << std::endl;
+	std::cout << "Generated splitted matrices time:" << (float)(clock() - start) / CLOCKS_PER_SEC << std::endl;
 	std::cout << "Data\t" << dataset_name << std::endl;
 	std::cout << "#Users\t" << userCount << std::endl;
 	std::cout << "#items\t" << itemCount << std::endl;

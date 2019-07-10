@@ -7,19 +7,19 @@ using namespace std;
 DenseVec::DenseVec(int size) {
 	//this->vect.resize(size);
 	this->size = size;
-	this->vect = new double[size];
+	this->vect = new float[size];
 }
 
-DenseVec::DenseVec(double* data) {
+DenseVec::DenseVec(float* data) {
 	//this->vector = data;
-	this->size = sizeof(data)/sizeof(double);
-  this->vect = new double[this->size];
+	this->size = sizeof(data)/sizeof(float);
+  this->vect = new float[this->size];
 	for (int i=0; i<this->size; i++){
     this->vect[i] = data[i];
   }
 }
 /*
-DenseVec::DenseVec(vector<double> data){
+DenseVec::DenseVec(vector<float> data){
   this->size = data.size();
   //this->vect = data;
 	for (int i=0; i<this->size; i++){
@@ -27,17 +27,17 @@ DenseVec::DenseVec(vector<double> data){
   }
 }
 */
-DenseVec::DenseVec(double* data, bool judge){
+DenseVec::DenseVec(float* data, bool judge){
   if(judge){
-    this->size = sizeof(data)/sizeof(double);
-    this->vect = new double[this->size];
+    this->size = sizeof(data)/sizeof(float);
+    this->vect = new float[this->size];
       //this->vect = data;
     for (int i=0; i<this->size; i++){
         this->vect[i] = data[i];
     }
   }
   else{
-    this->size = sizeof(data)/sizeof(double);
+    this->size = sizeof(data)/sizeof(float);
     this->vect = data;
   }
 }
@@ -58,9 +58,9 @@ DenseVec DenseVec::clone() {
 	return vec;
 }
 
-void DenseVec::init(double mean, double sigma) {
+void DenseVec::init(float mean, float sigma) {
 	std::default_random_engine e; 
-	std::normal_distribution<double> n(mean, sigma);
+	std::normal_distribution<float> n(mean, sigma);
 	for (int i = 0; i < this->size; i++) {
 		this->vect[i] = n(e);
 	}
@@ -69,25 +69,25 @@ void DenseVec::init(double mean, double sigma) {
 void DenseVec::init() {
   
 	std::default_random_engine e; 
-	std::normal_distribution<double> n(0, 1);
+	std::normal_distribution<float> n(0, 1);
 	for (int i = 0; i < this->size; i++) {
 	  this->vect[i] = n(e);
 	}
 }
 
-double DenseVec::get(int idx) {
+float DenseVec::get(int idx) {
 	return this->vect[idx];
 }
 
-void DenseVec::set(int idx, double val) {
+void DenseVec::set(int idx, float val) {
 	this->vect[idx] = val;
 }
 
-double DenseVec::inner(DenseVec vec){
-  double result = 0;
+float DenseVec::inner(DenseVec vec){
+  float result = 0;
   int size = vec.size;
-  double *v1 = this->vect;
-  double *v2 = vec.vect;
+  float *v1 = this->vect;
+  float *v2 = vec.vect;
 	for (int i = 0; i < size; i++)
 			result += (*(v1+i)) * (*(v2+i));
 
