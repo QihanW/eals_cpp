@@ -336,8 +336,8 @@ void MF_fastALS::update_user_thread(int u){
     for (int j = 0; j < size_item; j++) {
       i = itemList[j];
       prediction_items[j] = predict(u, i);
-      rating_items[j] = trainMatrix.getValue(u, i);
-      w_items[j] = W.getValue(u,i);
+      rating_items[j] = trainMatrix.rows[u].spv_do[j];
+      w_items[j] = W.rows[u].spv_do[j];
     }
 
     //DenseVec oldVector = U.row(u);
@@ -541,8 +541,8 @@ void  MF_fastALS::update_item_thread(int i){
       prediction_users[j] = predict(u, i);
       //if (i == 25458)
         // std::cout << u << " Time of 292: " <<(float)(clock() - start)/CLOCKS_PER_SEC  << std::endl;
-      rating_users[j] = trainMatrix.getValue(u, i);
-      w_users[j] = W.getValue(u, i);
+      rating_users[j] = trainMatrix.cols[i].spv_do[j];
+      w_users[j] = W.cols[i].spv_do[j];
      // }
     }
 
