@@ -929,3 +929,20 @@ void  MF_fastALS::update_item(int i) {
     //delete [] w_items;
     delete [] Wi;
 }
+
+
+float MF_fastALS::Calculate_RMSE(){
+  float L = reg * (U.squaredSum() + V.squaredSum());
+  int i;
+  for (int u = 0; u < userCount; u++) {
+    float l = 0;
+    i = testRatings[u].itemId;
+    float score = testRatings[u].score;
+    float pred = predict(u, i);
+    l += W.getValue(u, i) * pow(score - pred, 2);
+    l -= Wi[i] * pow(pred, 2);
+    l += SV.mult(U.row_fal(u)).inner(U.row_fal(u));
+    L += l;
+  }
+  return L / userCount ;
+}

@@ -228,7 +228,8 @@ int main(int argc, const char * argv[]) {
 
 	std::cout << "Start building model" << std::endl;
 	fals.buildModel();
-	evaluate_model(fals, testRatings);
-
+	//evaluate_model(fals, testRatings);
+  float res = fals.Calculate_RMSE();
+  std::cout<<"Evaluation result: "<<res<<std::endl;
 	return 0;
 }
