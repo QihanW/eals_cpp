@@ -1,0 +1,506 @@
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+
+Begin optimization report for: main(int, const char **)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(160,15)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(160,15)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(169,18)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(171,18)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+
+LOOP BEGIN at main.cpp(175,3)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ /usr/include/c++/7.4.0/bits/stl_map.h(809,34) ]
+LOOP END
+
+LOOP BEGIN at main.cpp(192,2)
+   remark #15523: loop was not vectorized: loop control variable u was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at main.cpp(195,3)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at main.cpp(201,48)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+LOOP END
+
+LOOP BEGIN at main.cpp(224,2)
+   remark #15520: loop was not vectorized: loop with multiple exits cannot be vectorized unless it meets search loop idiom criteria   [ main.cpp(225,3) ]
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(235,2)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(235,2)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed OUTPUT dependence between call:std::_Rb_tree<std::map<int, float, std::less<int>, std::all (1856:4) and call:operator delete(void *) (125:2)
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(235,2)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(235,2)
+         remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+         LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(235,2)
+            remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+            LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(235,2)
+               remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+            LOOP END
+         LOOP END
+      LOOP END
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(235,2)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at main.cpp(173,2)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ main.cpp(174,44) ]
+LOOP END
+
+LOOP BEGIN at main.cpp(198,3)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ main.cpp(202,20) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_type, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type, std::_Select1st<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type>, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_compare, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::_Pair_alloc_type>::_M_emplace_unique<std::pair<int, float>>(std::_Rb_tree<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_type, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type, std::_Select1st<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type>, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_compare, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::_Pair_alloc_type> *, std::pair<int, float> &&)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(2035,7) inlined into /usr/include/c++/7.4.0/bits/stl_tree.h(2357,44)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>, std::allocator<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>>>::~vector(std::vector<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>, std::allocator<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>>> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into /usr/include/c++/7.4.0/bits/stl_vector.h(435,9)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between __first->_M_t (294:7) and call:operator delete(void *) (125:2)
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_vector.h(435,9)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_vector.h(435,9)
+         remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+         LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_vector.h(435,9)
+            remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+            LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_vector.h(435,9)
+               remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+            LOOP END
+         LOOP END
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: ReadRatings_HoldOneOut(std::vector<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>> *, std::__cxx11::string *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at main.cpp(122,2)
+   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1845,57) inlined into main.cpp(123,3)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+      remark #15346: vector dependence: assumed ANTI dependence between *U41_V.U41_V (143:23) and *__last._M_current (1834:7)
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1828,7) inlined into main.cpp(123,3)
+         remark #15523: loop was not vectorized: loop control variable __next._M_current was found, but loop iteration count cannot be computed before executing the loop
+      LOOP END
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1866,53) inlined into main.cpp(123,3)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+      remark #15346: vector dependence: assumed ANTI dependence between *__i._M_current (1825:10) and *__last._M_current (1834:7)
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1828,7) inlined into main.cpp(123,3)
+         remark #15523: loop was not vectorized: loop control variable __next._M_current was found, but loop iteration count cannot be computed before executing the loop
+      LOOP END
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1845,57) inlined into main.cpp(123,3)
+      remark #15523: loop was not vectorized: loop control variable __i._M_current was found, but loop iteration count cannot be computed before executing the loop
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1828,7) inlined into main.cpp(123,3)
+         remark #15523: loop was not vectorized: loop control variable __next._M_current was found, but loop iteration count cannot be computed before executing the loop
+      LOOP END
+   LOOP END
+LOOP END
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/basic_ios.h(282,22) inlined into main.cpp(116,2)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ /usr/include/c++/7.4.0/bits/locale_facets.h(876,8) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::__introsort_loop<std::vector<Rating, std::allocator<Rating>>::iterator, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(Rating, Rating)>>(std::vector<Rating, std::allocator<Rating>>::iterator, std::vector<Rating, std::allocator<Rating>>::iterator, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(Rating, Rating)>)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/predefined_ops.h(143,40) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1954,56)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1902,4) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1954,56)
+      remark #15523: loop was not vectorized: loop control variable __first._M_current was found, but loop iteration count cannot be computed before executing the loop
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1905,4) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1954,56)
+      remark #15523: loop was not vectorized: loop control variable __last._M_current was found, but loop iteration count cannot be computed before executing the loop
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(338,46) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1949,8)
+   remark #15522: loop was not vectorized: loop control flow is too complex. Try using canonical loop form from OpenMP specification
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(219,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1949,8)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(133,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1949,8)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1673,54) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1949,8)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(219,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1949,8)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(133,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1949,8)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(405,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1949,8)
+   remark #15523: loop was not vectorized: loop control variable __last._M_current was found, but loop iteration count cannot be computed before executing the loop
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(219,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1949,8)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(133,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1949,8)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+LOOP END
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1944,7)
+   remark #15522: loop was not vectorized: loop control flow is too complex. Try using canonical loop form from OpenMP specification
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>>::_M_realloc_insert<std::remove_reference<std::vector<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>>::value_type &>::type>(std::vector<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>> *, std::vector<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>>::iterator, std::remove_reference<std::vector<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>>::value_type &>::type &&)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_uninitialized.h(82,23) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(426,8)
+   remark #15523: loop was not vectorized: loop control variable __cur was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_uninitialized.h(82,23) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(433,8)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(447,7)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between __first->_M_start (162:9) and call:operator delete(void *) (125:2)
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Destroy_aux<false>::__destroy<std::_Vector_base<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>>::pointer>(std::_Vector_base<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>>::pointer, std::_Vector_base<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>>::pointer)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between __first->_M_start (162:9) and call:operator delete(void *) (125:2)
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>>::~vector(std::vector<std::vector<Rating, std::allocator<Rating>>, std::allocator<std::vector<Rating, std::allocator<Rating>>>> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into /usr/include/c++/7.4.0/bits/stl_vector.h(435,9)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between __first->_M_start (162:9) and call:operator delete(void *) (125:2)
+LOOP END
+===========================================================================
+
+Begin optimization report for: evaluate_model(MF_fastALS *, std::vector<Rating, std::allocator<Rating>> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(43,8)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(43,8)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(43,8)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(43,8)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(43,8)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(43,8)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(44,9)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(44,9)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(44,9)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(44,9)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(44,9)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(44,9)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at main.cpp(46,2)
+   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into main.cpp(47,29)
+      remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_numeric.h(126,22) inlined into main.cpp(60,11)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_numeric.h(126,22) inlined into main.cpp(60,11)
+<Remainder loop for vectorization>
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_numeric.h(126,22) inlined into main.cpp(61,11)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_numeric.h(126,22) inlined into main.cpp(61,11)
+<Remainder loop for vectorization>
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_numeric.h(126,22) inlined into main.cpp(62,11)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_numeric.h(126,22) inlined into main.cpp(62,11)
+<Remainder loop for vectorization>
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::insert<std::pair<int, float>>(std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>> *, std::pair<int, float> &&)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(2035,7) inlined into /usr/include/c++/7.4.0/bits/stl_map.h(810,34)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::__fill_n_a<std::_Vector_base<float, std::allocator<float>>::pointer, std::vector<float, std::allocator<float>>::size_type, std::iterator_traits<std::vector<float, std::allocator<float>>::pointer>::value_type>(std::_Vector_base<float, std::allocator<float>>::pointer, std::vector<float, std::allocator<float>>::size_type, const std::iterator_traits<std::vector<float, std::allocator<float>>::pointer>::value_type &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7)
+<Peeled loop for vectorization>
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7)
+<Remainder loop for vectorization>
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Destroy_aux<false>::__destroy<std::_Vector_base<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>, std::allocator<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>>>::pointer>(std::_Vector_base<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>, std::allocator<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>>>::pointer, std::_Vector_base<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>, std::allocator<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>>>::pointer)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between __first->_M_t (294:7) and call:operator delete(void *) (125:2)
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_construct.h(109,6)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_construct.h(109,6)
+         remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+         LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_construct.h(109,6)
+            remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+            LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_construct.h(109,6)
+               remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+            LOOP END
+         LOOP END
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_type, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type, std::_Select1st<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type>, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_compare, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::_Pair_alloc_type>::_M_erase(std::_Rb_tree<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_type, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type, std::_Select1st<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type>, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_compare, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::_Pair_alloc_type> *, std::_Rb_tree<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_type, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type, std::_Select1st<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type>, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_compare, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::_Pair_alloc_type>::_Link_type)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_tree.h(1857,4)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_tree.h(1857,4)
+         remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+         LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_tree.h(1857,4)
+            remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+         LOOP END
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>, std::allocator<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>>>::_M_default_append(std::vector<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>, std::allocator<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>>> *, std::vector<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>, std::allocator<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>>>::size_type)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_uninitialized.h(526,8) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(564,3)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed OUTPUT dependence between call:memset(void *, int, unsigned long) (75:7) and this->_M_parent (208:7)
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_uninitialized.h(526,8) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(576,5)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed OUTPUT dependence between this->_M_color (175:7) and this->_M_node_count (211:7)
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_uninitialized.h(82,23) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(579,5)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between __p2->_M_parent (182:7) and this->_M_node_count (211:7)
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(591,8)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between __first->_M_t (294:7) and call:operator delete(void *) (125:2)
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(591,8)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(591,8)
+         remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+         LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(591,8)
+            remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+            LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(591,8)
+               remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+            LOOP END
+         LOOP END
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<float, std::allocator<float>>::_M_default_append(std::vector<float, std::allocator<float>> *, std::vector<float, std::allocator<float>>::size_type)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(564,3)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(564,3)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(564,3)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(576,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(576,5)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into /usr/include/c++/7.4.0/bits/vector.tcc(576,5)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+===========================================================================

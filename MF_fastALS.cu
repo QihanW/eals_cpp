@@ -1,5 +1,5 @@
 #include "omp.h"
-#include "MF_fastALS.h"
+#include "MF_fastALS.cuh"
 #include <math.h>
 #include <vector>
 #include <float.h>
@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <functional>
 #include <time.h>
-#include <immintrin.h>
+//#include <immintrin.h>
 #include "DenseVec.h"
 #include "DenseMat.h"
 #include "SparseVec.h"
@@ -20,6 +20,9 @@
 
 #define NUM_float 8
 #define TILE_SIZE 8
+#define BLOCK_NUM 64
+#define THREAD_NUM 256
+
 /*
 using namespace Eigen;
 
@@ -112,6 +115,71 @@ void MF_fastALS::setUV(DenseMat U, DenseMat V) {
 	initS();
 }
 
+__global__ void computeSUValue (float *u_clone, float *u, int f, int k, int factors,  float *result, int userCount){
+/*  int tid = threadIdx.x;
+  int bid = blockIdx.x;
+  float sum = 0;
+  for(int i = bid*THREAD_NUM+tid; i < userCount; i+=BLOCK_NUM*THREAD_NUM){
+    sum = sum - ufc[i] * ukc[i] + uf[i] * uk[i];
+  }
+  result[bid*THREAD_NUM+tid] = sum;*/
+
+  __shared__ float cache[THREAD_NUM];
+  int tid = threadIdx.x;
+  int bid = blockIdx.x;
+  int cacheIndex = threadIdx.x;
+
+  float temp = 0;
+  int index;
+  for(int i = bid*THREAD_NUM+tid; i < userCount; i+=BLOCK_NUM*THREAD_NUM){
+    index = i * factors;
+    temp = temp - u_clone[index+f] * u_clone[index+k] + u[index+f] * u[index+k];
+  }
+
+  cache[cacheIndex] = temp;
+  __syncthreads();
+
+  int i = blockDim.x/2;
+  while (i != 0) {
+    if (cacheIndex < i)
+      cache[cacheIndex] += cache[cacheIndex + i];
+    __syncthreads();
+    i /= 2;
+  }
+  if (cacheIndex == 0)
+    result[blockIdx.x] = cache[0];
+
+}
+
+__global__ void computeSVValue (float *u_clone, float *u, int f, int k, int factors, float *result, int userCount, float *wi_cu){
+  __shared__ float cache[THREAD_NUM];
+  int tid = threadIdx.x;
+  int bid = blockIdx.x;
+  int cacheIndex = threadIdx.x;
+
+  float temp = 0;
+  int index;
+  for(int i = bid*THREAD_NUM+tid; i < userCount; i+=BLOCK_NUM*THREAD_NUM){
+    index = i * factors;
+    temp = wi_cu[i] * (0 - u_clone[index+f] * u_clone[index+k] + u[index+f] * u[index+k]);
+    //temp = temp * wi_cu[i];
+  }
+
+  cache[cacheIndex] = temp;
+  __syncthreads();
+
+  int i = blockDim.x/2;
+  while (i != 0) {
+    if (cacheIndex < i)
+      cache[cacheIndex] += cache[cacheIndex + i];
+    __syncthreads();
+    i /= 2;
+  }
+  if (cacheIndex == 0)
+    result[blockIdx.x] = cache[0];
+
+}
+
 void MF_fastALS::buildModel() {
 	omp_set_num_threads(1);
 	
@@ -164,7 +232,7 @@ void MF_fastALS::buildModel() {
     //  update_user_SU(u_clone.matrix[u], U.matrix[u]);
    //double end = omp_get_wtime();
    //std::cout<<"First part time: "<<end-start<<std::endl;
-    for (int f = 0; f < factors; f++) {                                                                                           
+  /*  for (int f = 0; f < factors; f++) {                                                                                           
 	      for (int k = 0; k <= f; k++) {
 	        float val = SU.matrix[f][k];
 	        #pragma omp parallel for reduction(+:val) 
@@ -176,8 +244,110 @@ void MF_fastALS::buildModel() {
 		      SU.matrix[k][f] = val;                                                      
 	                                                                               
       }     
+    }*/
+/*
+    int byteSize = sizeof(float)*userCount;
+    float *U_clone_f, *U_clone_k, *U_f, *U_k, *result;
+    U_clone_f = (float *)malloc(byteSize);
+    U_clone_k = (float *)malloc(byteSize);
+    U_f = (float *)malloc(byteSize);
+    U_k = (float *)malloc(byteSize);
+    result = (float *)malloc(sizeof(float)*(BLOCK_NUM));
+  */  //std::cout<<"201 is okay"<<std::endl;
+    /*cudaHostAlloc((void **)&U_clone_f, byteSize, cudaHostAllocDefault);
+    cudaHostAlloc((void **)&U_clone_k, byteSize, cudaHostAllocDefault);
+    cudaHostAlloc((void **)&U_f, byteSize, cudaHostAllocDefault);
+    cudaHostAlloc((void **)&U_k, byteSize, cudaHostAllocDefault);
+    cudaHostAlloc((void **)&result, sizeof(float)*(BLOCK_NUM), cudaHostAllocDefault);
 
+  
+    float *U_clone_f_cu, *U_clone_k_cu, *U_f_cu, *U_k_cu, *result_cu;
+    cudaMalloc((void**)&U_clone_f_cu, byteSize);
+    cudaMalloc((void**)&U_clone_k_cu, byteSize);
+    cudaMalloc((void**)&U_f_cu, byteSize);
+    cudaMalloc((void**)&U_k_cu, byteSize);
+    cudaMalloc((void**)&result_cu, sizeof(float)*(BLOCK_NUM));
+    */
+    //std::cout<<"208 is okay"<<std::endl;
+  
+    int byteSize = sizeof(float)*userCount*factors;
+    float *U_clone_cu, *U_cu, *U_h, *U_clone_h, *result, *result_cu;
+    U_h = (float *)malloc(byteSize);
+    U_clone_h = (float *)malloc(byteSize);
+    result = (float *)malloc(sizeof(float)*(BLOCK_NUM));
+    cudaMalloc((void**)&U_clone_cu, byteSize);
+    cudaMalloc((void**)&U_cu, byteSize);
+    cudaMalloc((void**)&result_cu, sizeof(float)*(BLOCK_NUM));
+    int ii = 0;
+
+    #pragma omp parallel for
+    for (int u = 0; u < userCount; u++){
+      for(int j = 0; j < factors; j++){
+        U_h[ii] = U.matrix[u][j];
+        U_clone_h[ii] = u_clone.matrix[u][j];
+        ii++;
+      }
     }
+
+    cudaMemcpy(U_clone_cu, U_clone_h, byteSize, cudaMemcpyHostToDevice);
+    cudaMemcpy(U_cu, U_h, byteSize, cudaMemcpyHostToDevice);
+    
+    //int indexf, indexk;
+    for (int f = 0; f < factors; f++) { 
+      for (int k = 0; k <= f; k++) {                                          
+        float val = SU.matrix[f][k];
+        /*
+        #pragma omp parallel for
+        for (int u = 0; u < userCount; u++){
+          U_clone_f[u] = u_clone.matrix[u][f];
+          U_clone_k[u] = u_clone.matrix[u][k];
+          U_f[u] = U.matrix[u][f];
+          U_k[u] = U.matrix[u][k];
+         }
+        */
+       // #pragma omp parallel for
+       // for (int u = 0; u < BLOCK_NUM; u++)
+     //     result[u] = 0;
+        /*
+        cudaMemcpy(U_clone_f_cu, U_clone_f, byteSize, cudaMemcpyHostToDevice);
+        cudaMemcpy(U_clone_k_cu, U_clone_k, byteSize, cudaMemcpyHostToDevice);
+        cudaMemcpy(U_f_cu, U_f, byteSize, cudaMemcpyHostToDevice);
+        cudaMemcpy(U_k_cu, U_k, byteSize, cudaMemcpyHostToDevice);
+        cudaMemcpy(U_k_cu, U_k, byteSize, cudaMemcpyHostToDevice);
+        */
+        //cudaMemcpy(result_cu, result, sizeof(float)*(BLOCK_NUM), cudaMemcpyHostToDevice);
+
+        computeSUValue<<<BLOCK_NUM,THREAD_NUM,0>>>(U_clone_cu, U_cu, f, k, factors, result_cu, userCount);
+
+        cudaMemcpy(result, result_cu, sizeof(float)*(BLOCK_NUM), cudaMemcpyDeviceToHost);
+
+        #pragma omp parallel for reduction(+:val)                          
+        for (int u = 0; u < BLOCK_NUM; u++){                                  
+          val += result[u];                                                       
+        }                                                                     
+        
+        SU.matrix[f][k] = val;
+        SU.matrix[k][f] = val;
+       }                                                                  
+    }
+
+    //std::cout<<"245 is okay"<<std::endl;
+    cudaFree(U_clone_cu);
+    //cudaFree(U_clone_k_cu);
+    cudaFree(U_cu);
+    //cudaFree(U_k_cu);
+    cudaFree(result_cu);
+    /*free(U_clone_f);
+    free(U_clone_k);
+    free(U_f);
+    free(U_k);
+    free(result);*/
+    cudaFreeHost(U_clone_h);
+    //cudaFreeHost(U_clone_k);
+    cudaFreeHost(U_h);
+    //cudaFreeHost(U_k);
+    cudaFreeHost(result);
+
    // std::cout<<"The second part: "<<omp_get_wtime() - end<<std::endl; 
     double time_user_update = omp_get_wtime() - start;
 		std::cout << "Time of user_update: " <<time_user_update<< std::endl;
@@ -187,7 +357,8 @@ void MF_fastALS::buildModel() {
 		//
 		//
 	 DenseMat v_clone(itemCount, factors);
-    for (int i = 0; i<itemCount; i++){
+   #pragma omp parallel for 
+   for (int i = 0; i<itemCount; i++){
 	    for (int j = 0; j<factors; j++){
 		    v_clone.matrix[i][j] = V.matrix[i][j];
 	     }
@@ -204,11 +375,12 @@ void MF_fastALS::buildModel() {
 		/*for (int i = 0; i < itemCount; i++){
       update_item_SV(i, v_clone.matrix[i], V.matrix[i]);
     }*/
-
+/*  
   for (int f = 0; f < factors; f++) {
 	  for (int k = 0; k <= f; k++) {
 		  float val = SV.matrix[f][k];
- 		  #pragma omp parallel for reduction(+:val)
+ 		  
+      #pragma omp parallel for reduction(+:val)
   		for (int u = 0; u < itemCount; u++){
  			  float tmp = 0 - v_clone.matrix[u][f] * v_clone.matrix[u][k] + V.matrix[u][f] * V.matrix[u][k] ;
 			  tmp = tmp *  Wi[u];
@@ -218,7 +390,56 @@ void MF_fastALS::buildModel() {
       SV.matrix[k][f] = val;
     }
   }
-      
+  */
+
+    byteSize = sizeof(float)*itemCount*factors;
+    float *wii, *V_clone_cu, *V_cu, *V_h, *V_clone_h, *resultv, *resultv_cu, *wi_cu;
+    V_h = (float *)malloc(byteSize);
+    V_clone_h = (float *)malloc(byteSize);
+    resultv = (float *)malloc(sizeof(float)*(BLOCK_NUM));
+    cudaMalloc((void**)&V_clone_cu, byteSize);
+    cudaMalloc((void**)&V_cu, byteSize);
+    cudaMalloc((void**)&wi_cu, sizeof(float)*itemCount);
+    cudaMalloc((void**)&resultv_cu, sizeof(float)*(BLOCK_NUM));
+    ii = 0;
+    wii = (float *)malloc(sizeof(float)*itemCount);
+
+    #pragma omp parallel for
+    for (int u = 0; u < itemCount; u++){
+      for(int j = 0; j < factors; j++){
+        V_h[ii] = V.matrix[u][j];
+        V_clone_h[ii] = v_clone.matrix[u][j];
+        ii++;
+      }
+      wii[u] = Wi[u];
+    }
+
+    cudaMemcpy(V_clone_cu, V_clone_h, byteSize, cudaMemcpyHostToDevice);
+    cudaMemcpy(V_cu, V_h, byteSize, cudaMemcpyHostToDevice);
+    cudaMemcpy(wi_cu, wii, sizeof(float)*itemCount, cudaMemcpyHostToDevice);
+
+    for (int f = 0; f < factors; f++) {
+      for (int k = 0; k <= f; k++) {
+        float val = SV.matrix[f][k];
+        computeSVValue<<<BLOCK_NUM,THREAD_NUM,0>>>(V_clone_cu, V_cu, f, k, factors, resultv_cu, itemCount, wi_cu);
+        cudaMemcpy(resultv, resultv_cu, sizeof(float)*(BLOCK_NUM), cudaMemcpyDeviceToHost);
+        #pragma omp parallel for reduction(+:val)
+        for (int u = 0; u < BLOCK_NUM; u++){
+          val += resultv[u];
+        } 
+        SV.matrix[f][k] = val;
+        SV.matrix[k][f] = val;
+      }
+    }
+    cudaFree(V_clone_cu);
+    cudaFree(V_cu);
+    cudaFree(resultv_cu);
+    cudaFree(wi_cu);
+    free(wii);
+    free(V_h);
+    free(V_clone_h);
+    free(resultv);
+
     double time_item_update = omp_get_wtime() - start;;
     std::cout << "Time of item_update: " << time_item_update << std::endl;
 		// Show loss
@@ -227,6 +448,8 @@ void MF_fastALS::buildModel() {
 
 	} // end for iter
 }
+
+
 
 void MF_fastALS::runOneIteration() {
 	// Update user latent vectors

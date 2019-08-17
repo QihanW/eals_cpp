@@ -6,7 +6,7 @@
 #include <map>
 #include <cmath>
 #include <assert.h>
-#include "MF_fastALS.h"
+#include "MF_fastALS.cuh"
 #include <stdio.h>
 #include <Eigen/Sparse>
 #include <Eigen/Dense>
@@ -79,7 +79,7 @@ std::vector<std::vector<Rating>> ReadRatings_HoldOneOut(std::string dir) {
 	//std::cout << dir << std::endl;
 
 	std::ifstream  fin;
-	fin.open("yelp.rating");
+	fin.open("amazon.rating");
 	std::string line;
 	
 	if (!fin.is_open()) {
@@ -135,8 +135,8 @@ int main(int argc, const char * argv[]) {
 	float w0 = 10;
 	bool showProgress = false;
 	bool showLoss = true;
-	int factors = 32;
-	int maxIter = 50;
+	int factors = 20;
+	int maxIter = 20;
 	float reg = 0.01;
 	float alpha = 0.75;
 	float init_mean = 0; 
@@ -230,6 +230,7 @@ int main(int argc, const char * argv[]) {
 	fals.buildModel();
 	//evaluate_model(fals, testRatings);
   float res = fals.Calculate_RMSE();
-  std::cout<<"Evaluation result: "<<res<<std::endl;
+  std::cout<<"Evaluation loss: "<<res<<std::endl;
+
 	return 0;
 }
