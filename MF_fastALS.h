@@ -71,7 +71,6 @@ public:
 	void update_item_thread(int i);
 	void update_item_SV(int i, float *oldVector, float *vget);
 	float Calculate_RMSE();
-	void updateUserSchedule();
 	~MF_fastALS();
 
 protected: 
