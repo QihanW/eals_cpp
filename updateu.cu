@@ -7,6 +7,10 @@ using namespace std;
 
 void updateUserSchedule2(float **trainMatrixdo, float **W, float **U, int **trainMatrixin, float **V, float **SV, float *Wi);
 
+<<<<<<< HEAD
+/*
+=======
+>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
 __global__ void updateUserCuda(float **prediction_items, float **rating_items, float **w_items, int userCount, int factors, float reg, float **w_cu1, float **u_cu, float **v_cu, float *wi_cu, float **sv_cu, float **train_spvdo_cu, int *train_n_cu, int **train_spvin_cu, float **v_col){
   int tid = threadIdx.x;
   int bid = blockIdx.x;
@@ -176,6 +180,63 @@ __global__ void updateUserCuda2(float **prediction_items, float **rating_items, 
       }
     }
   }
+<<<<<<< HEAD
+}*/
+
+__global__ void updateUserCuda(float *prediction_items, float *rating_items, float *w_items, float *v_col, int uborder, int vborder, int userCount, int factors, float reg, float *w_cu, float *uvsv_cu, float *wi_cu, float *train_spvdo_cu, int *train_n_cu, int *train_spvin_cu){
+  int tid = threadIdx.x;
+  int bid = blockIdx.x;
+  int size_item;
+  float ifv, ufget, tmp_uget;
+  int i;
+  float res;
+  float numer, denom;
+  int size2;
+  int index;
+  for(int u = bid*THREAD_NUM+tid; u < userCount; u+=BLOCK_NUM*THREAD_NUM){
+    size_item = train_n_cu[u+1] - train_n_cu[u];
+    size2 = train_n_cu[u];
+    if (size_item == 0)        continue ;
+    for (int j = 0; j < size_item; j++) {
+      index = size2+j;
+      i = train_spvin_cu[index];
+      res = 0;
+      for(int k=0; k<factors; k++){
+        res += uvsv_cu[u*factors+k] * uvsv_cu[uborder+i*factors+k];
+      }
+      prediction_items[index] = res;
+      rating_items[index] = train_spvdo_cu[index];
+      w_items[index] = w_cu[index];
+    }
+    for (int f = 0; f < factors; f++) {
+      numer = 0, denom = 0;
+      for(int j = 0; j<size_item; j++){
+        i = train_spvin_cu[size2+j];
+        v_col[size2+j] = uvsv_cu[uborder+i*factors+f];
+      }
+      for(int k = 0; k<factors; k++){
+        numer -= uvsv_cu[u*factors+k] * uvsv_cu[vborder+f*factors+k];
+      }
+      ufget = uvsv_cu[u*factors+f];
+      for (int j = 0; j<size_item; j++) {
+        index = size2+j;
+        i = train_spvin_cu[index];
+        ifv = v_col[index];
+        prediction_items[index] -= ufget * ifv;
+        numer += (w_items[index] * rating_items[index] - (w_items[index] - wi_cu[i]) * prediction_items[index]) * ifv;
+        denom += (w_items[index] - wi_cu[i]) * ifv * ifv;
+      }
+      denom += uvsv_cu[vborder+f*factors+f] + reg;
+      uvsv_cu[u*factors+f] = numer / denom;
+      tmp_uget = numer / denom;
+      printf("%f ", tmp_uget);
+      for (int j = 0; j<size_item; j++){
+        prediction_items[size2+j] += tmp_uget * v_col[size2+j];
+      }
+    }
+  }
+//=======
+//>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
 }
 
 void updateUserCpp(float *prediction_items, float *rating_items, float *w_items, int userCount, int factors, float reg, float **w_cu1, float **u_cu, float **v_cu, float *wi_cu, float **sv_cu, float **train_spvdo_cu, int *train_n_cu, int **train_spvin_cu, float *v_col){
@@ -219,6 +280,10 @@ void updateUserCpp(float *prediction_items, float *rating_items, float *w_items,
       denom +=sv_cu[f][f] + reg;
       u_cu[u][f] = numer / denom;
       tmp_uget = numer / denom;
+//<<<<<<< HEAD
+      //printf("%f ", tmp_uget);
+//=======
+//>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
       for (int j = 0; j<size_item; j++){
         prediction_items[j] += tmp_uget * v_col[j];
       }
@@ -292,7 +357,11 @@ for (int u = 0; u < userCount; u++){
   }
 
   updateUserCpp(prediction_items, rating_items, w_items, userCount, factors, reg, w_cu, u_cu, v_cu, wi_cu, sv_cu, train_spvdo_cu, train_n_cu, train_spvin_cu, v_col);
-  updateUserSchedule2(train_spvdo_cu, w_cu, u2, train_spvin_cu, v_cu, sv_cu, wi_cu);
+//<<<<<<< HEAD
+  //updateUserSchedule2(train_spvdo_cu, w_cu, u2, train_spvin_cu, v_cu, sv_cu, wi_cu);
+//=======
+  //updateUserSchedule2(train_spvdo_cu, w_cu, u2, train_spvin_cu, v_cu, sv_cu, wi_cu);
+//>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
 
   cout<<"cpp: "<<endl;
   //float sum = 0;
@@ -303,7 +372,14 @@ for (int u = 0; u < userCount; u++){
     }
   }
   cout<<endl;
+//<<<<<<< HEAD
+  cout<<"cuda :";
+  updateUserSchedule2(train_spvdo_cu, w_cu, u2, train_spvin_cu, v_cu, sv_cu, wi_cu);
+  cout<<endl;
+  //cout<<"sum: "<<sum<<endl;
+//=======
 //cout<<"sum: "<<sum<<endl;
+//>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
   free(wi_cu);
   free(prediction_items);
   free(rating_items);
@@ -332,8 +408,108 @@ for (int u = 0; u < userCount; u++){
   free(train_spvin_cu);                                                                                               
   free(train_spvdo_cu);
 }
+//<<<<<<< HEAD
+void updateUserSchedule2(float **trainMatrixdo, float **W, float **U, int **trainMatrixin, float **V, float **SV, float *Wi){
+  int userCount = 10;                                                           
+  int itemCount = 20;                                                           
+  int factors = 8;                                                              
+  float reg = 0;                                                                
+  int max_size = 5, size, size2;
+  float *w_items, *prediction_items, *v_col, *rating_items;
+  int total_size = max_size * userCount + 10;
+  cudaMalloc((void**)&prediction_items,sizeof(float)*total_size);
+  cudaMalloc((void**)&w_items,sizeof(float)*total_size);
+  cudaMalloc((void**)&rating_items,sizeof(float)*total_size);
+  cudaMalloc((void**)&v_col,sizeof(float)*total_size);
+
+  float *w_cu, *uvsv_cu, *train_spvdo_cu;
+  int *train_spvin_cu;
+  int uvsvSize = sizeof(float) * (userCount + itemCount + factors) * factors;
+  cudaMalloc((void**)&w_cu, sizeof(float)*total_size);
+  cudaMalloc((void**)&uvsv_cu, uvsvSize);
+  cudaMalloc((void**)&train_spvin_cu,sizeof(int)*total_size);
+  cudaMalloc((void**)&train_spvdo_cu,sizeof(float)*total_size);
+  int *train_n, *train_n_cu;
+  train_n = (int *)malloc(sizeof(int)*userCount);
+  cudaMalloc((void**)&train_n_cu,sizeof(int)*userCount);
+  
+  float *w_h, *uvsv_h, *train_spvdo_h;
+  int *train_spvin_h;
+  w_h = (float *)malloc(sizeof(float)*total_size);
+  uvsv_h = (float *)malloc(uvsvSize);
+  train_spvin_h = (int *)malloc(sizeof(int)*total_size);
+  train_spvdo_h = (float *)malloc(sizeof(float)*total_size);
+  train_n[0] = 0;
+  //cout<<total_size<<endl;
+  for (int u = 0; u < userCount; u++){
+    size = 5;
+    size2 = train_n[u];
+    train_n[u+1] = size2 + size;
+    for(int i=0; i<size; i++){
+      //cout<<size2+i<<endl;
+      w_h[size2+i] = W[u][i];
+      train_spvin_h[size2+i] = trainMatrixin[u][i];
+      train_spvdo_h[size2+i] = trainMatrixdo[u][i];
+    }
+  }
+  int uborder = userCount * factors;
+  int vborder = uborder + itemCount * factors;
+  for (int u = 0; u < userCount; u++){
+    for(int i=0; i<factors; i++)
+      uvsv_h[u*factors+i] = U[u][i];
+  } 
+  for (int u = 0; u < itemCount; u++){
+    for(int i=0; i<factors; i++)
+      uvsv_h[uborder+u*factors+i] = V[u][i];
+  } 
+  for (int u = 0; u < factors; u++){
+    for(int i=0; i<factors; i++)
+      uvsv_h[vborder+u*factors+i] = SV[u][i];
+  } 
+  cudaMemcpy(uvsv_cu, uvsv_h, uvsvSize, cudaMemcpyHostToDevice);
+  cudaMemcpy(w_cu, w_h, sizeof(float)*total_size, cudaMemcpyHostToDevice);
+  cudaMemcpy(train_spvdo_cu, train_spvdo_h, sizeof(float)*total_size, cudaMemcpyHostToDevice);
+  cudaMemcpy(train_spvin_cu, train_spvin_h, sizeof(int)*total_size, cudaMemcpyHostToDevice);
+  cudaMemcpy(train_n_cu, train_n, sizeof(int)*userCount, cudaMemcpyHostToDevice);
+  float *wi_cu;
+  cudaMalloc((void**)&wi_cu, sizeof(float)*itemCount);
+  cudaMemcpy(wi_cu, Wi, sizeof(float)*itemCount, cudaMemcpyHostToDevice);
+  updateUserCuda<<<BLOCK_NUM,THREAD_NUM>>>(prediction_items, rating_items, w_items, v_col, uborder, vborder, userCount, factors, reg, w_cu, uvsv_cu, wi_cu, train_spvdo_cu, train_n_cu, train_spvin_cu);
+  cudaMemcpy(uvsv_h, uvsv_cu, uvsvSize, cudaMemcpyDeviceToHost);
+  for (int u = 0; u < userCount; u++){
+    for(int i=0; i<factors; i++)
+      U[u][i] = uvsv_h[u*factors+i];
+  }
+  cout<<endl;
+  cudaFree(prediction_items);
+  cudaFree(w_items);
+  cudaFree(rating_items);
+  cudaFree(v_col);
+  //cout<<"470";
+  cudaFree(train_n_cu);
+  cudaFree(w_cu);
+  cudaFree(uvsv_cu);
+  //cout<<"474";
+  cudaFree(train_spvin_cu);
+  //cout<<"476";
+  //cudaFree(train_spvdo_cu);
+  //cout<<"478";
+  cudaFree(wi_cu);
+  //cout<<"480";
+  free(train_n);
+  free(w_h);
+  free(uvsv_h);
+  free(train_spvin_h);
+  free(train_spvdo_h);
+  cudaFree(train_spvdo_cu);
+  //cout<<"481";
+}
+
+/*
+=======
 
 
+>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
 void updateUserSchedule2(float **trainMatrixdo, float **W, float **U, int **trainMatrixin, float **V, float **SV, float *Wi){                                          
   int userCount = 10;
   int itemCount = 20;
@@ -648,6 +824,12 @@ void MF_fastALS::updateUserSchedule3(float **trainMatrixdo, float **W, float **U
   free(train_spvdo_h);
 
 }
+<<<<<<< HEAD
+*/
+
+
+//=======
+//>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
 
 int main(){
   updateUserSchedule1();

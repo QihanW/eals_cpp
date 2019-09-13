@@ -20,8 +20,8 @@
 
 #define NUM_float 8
 #define TILE_SIZE 8
-#define BLOCK_NUM 64
-#define THREAD_NUM 256
+#define BLOCK_NUM 32
+#define THREAD_NUM 4
 
 /*
 using namespace Eigen;
@@ -860,7 +860,11 @@ void MF_fastALS::updateUserSchedule(){
 
 }
 */
+//<<<<<<< HEAD
+/*
+=======
 
+>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
 __global__ void updateUserCuda(float **prediction_items, float **rating_items, float **w_items, int userCount, int factors, float reg, float **w_cu1, float **u_cu, float **v_cu, float *wi_cu, float **sv_cu, float **train_spvdo_cu, int *train_n_cu, int **train_spvin_cu, float **v_col){
   int tid = threadIdx.x;
   int bid = blockIdx.x;
@@ -1065,6 +1069,181 @@ __global__ void updateUserCuda(float **prediction_items, float **rating_items, f
   free(train_spvin_h);
   free(train_spvdo_h);
 }
+<<<<<<< HEAD
+*/
+__global__ void updateUserCuda(float *prediction_items, float *rating_items, float *w_items, float *v_col, int uborder, int vborder, int userCount, int factors, float reg, float *w_cu, float *uvsv_cu, float *wi_cu, float *train_spvdo_cu, int *train_n_cu, int *train_spvin_cu){
+  int tid = threadIdx.x;
+  int bid = blockIdx.x;
+  int size_item;
+  float ifv, ufget, tmp_uget;
+  int i;
+  float res;
+  float numer, denom;
+  int size2;
+  int index;
+  for(int u = bid*THREAD_NUM+tid; u < userCount; u+=BLOCK_NUM*THREAD_NUM){
+   // if(u>=117135)
+     // printf("%d ", u);
+    size_item = train_n_cu[u+1] - train_n_cu[u];
+    size2 = train_n_cu[u];
+    if (size_item == 0)        continue ;
+
+   // if(u>=117135)
+     // printf("1085 ");
+    for (int j = 0; j < size_item; j++) {
+      index = size2+j;
+      //printf("%d ",index);
+      i = train_spvin_cu[index];
+      res = 0;
+      for(int k=0; k<factors; k++){
+        res += uvsv_cu[u*factors+k] * uvsv_cu[uborder+i*factors+k];
+      }
+      //printf("%f ", res);
+      prediction_items[index] = res;
+     // printf("1096 ");
+      rating_items[index] = train_spvdo_cu[index];
+      w_items[index] = w_cu[index];
+    }
+   // if(u>=117135)
+     //  printf("1103 ");
+    for (int f = 0; f < factors; f++) {
+      numer = 0, denom = 0;
+      for(int j = 0; j<size_item; j++){
+        i = train_spvin_cu[size2+j];
+        v_col[size2+j] = uvsv_cu[uborder+i*factors+f];
+      }
+      for(int k = 0; k<factors; k++){
+        numer -= uvsv_cu[u*factors+k] * uvsv_cu[vborder+f*factors+k];
+      }
+      ufget = uvsv_cu[u*factors+f];
+      for (int j = 0; j<size_item; j++) {
+        index = size2+j;
+        i = train_spvin_cu[index];
+        ifv = v_col[index];
+        prediction_items[index] -= ufget * ifv;
+        numer += (w_items[index] * rating_items[index] - (w_items[index] - wi_cu[i]) * prediction_items[index]) * ifv;
+        denom += (w_items[index] - wi_cu[i]) * ifv * ifv;
+      }
+      denom += uvsv_cu[vborder+f*factors+f] + reg;
+      uvsv_cu[u*factors+f] = numer / denom;
+      tmp_uget = numer / denom;
+      //printf("%f ", tmp_uget);
+      for (int j = 0; j<size_item; j++){
+        prediction_items[size2+j] += tmp_uget * v_col[size2+j];
+      }
+    }
+    //printf("%d ", u);
+  }
+}
+
+
+
+//change the data structure
+ void MF_fastALS::updateUserSchedule(){
+
+  int max_size = 5200, size, size2;
+  float *w_items, *prediction_items, *v_col, *rating_items;
+  int total_size = trainMatrix.itemCount()+10;
+  cudaMalloc((void**)&prediction_items,sizeof(float)*total_size);
+  cudaMalloc((void**)&w_items,sizeof(float)*total_size);
+  cudaMalloc((void**)&rating_items,sizeof(float)*total_size);
+  cudaMalloc((void**)&v_col,sizeof(float)*total_size);
+
+  float *w_cu, *uvsv_cu, *train_spvdo_cu;
+  int *train_spvin_cu;
+
+  int uvsvSize = sizeof(float) * (userCount + itemCount + factors) * factors;
+cudaMalloc((void**)&w_cu, sizeof(float)*total_size);
+  cudaMalloc((void**)&uvsv_cu, uvsvSize);
+  cudaMalloc((void**)&train_spvin_cu,sizeof(int)*total_size);
+  cudaMalloc((void**)&train_spvdo_cu,sizeof(float)*total_size);
+  int *train_n, *train_n_cu;
+  train_n = (int *)malloc(sizeof(int)*userCount);
+  cudaMalloc((void**)&train_n_cu,sizeof(int)*userCount);
+
+  //std::cout<<"total size: "<<total_size<<std::endl;
+  float *w_h, *uvsv_h, *train_spvdo_h;
+  int *train_spvin_h;
+  w_h = (float *)malloc(sizeof(float)*total_size);
+  uvsv_h = (float *)malloc(uvsvSize);
+  train_spvin_h = (int *)malloc(sizeof(int)*total_size);
+  train_spvdo_h = (float *)malloc(sizeof(float)*total_size);
+
+  //int index_w=0;
+  //int index_u=0;
+  train_n[0] = 0;
+  for (int u = 0; u < userCount; u++){
+    size = trainMatrix.rows[u].n;
+    size2 = train_n[u];
+    train_n[u+1] = size2 + size;
+
+    for(int i=0; i<size; i++){
+     // std::cout<<"size2+i-1: "<<size2+i-1<<std::endl;
+      w_h[size2+i] = W.rows[u].spv_do[i];
+      train_spvin_h[size2+i] = trainMatrix.rows[u].spv_in[i];
+      train_spvdo_h[size2+i] = trainMatrix.rows[u].spv_do[i];
+    }
+  }
+  //std::cout<<"line 1178 \n";
+
+  int uborder = userCount * factors;
+  int vborder = uborder + itemCount * factors;
+
+  for (int u = 0; u < userCount; u++){
+    for(int i=0; i<factors; i++)
+      uvsv_h[u*factors+i] = U.matrix[u][i];
+  }
+  for (int u = 0; u < itemCount; u++){
+    for(int i=0; i<factors; i++)
+      uvsv_h[uborder+u*factors+i] = V.matrix[u][i];
+  }
+  for (int u = 0; u < factors; u++){
+    for(int i=0; i<factors; i++)
+      uvsv_h[vborder+u*factors+i] = SV.matrix[u][i];
+  }
+  //std::cout<<"1195 \n";
+  cudaMemcpy(uvsv_cu, uvsv_h, uvsvSize, cudaMemcpyHostToDevice);
+  cudaMemcpy(w_cu, w_h, sizeof(float)*total_size, cudaMemcpyHostToDevice);
+  cudaMemcpy(train_spvdo_cu, train_spvdo_h, sizeof(float)*total_size, cudaMemcpyHostToDevice);
+  cudaMemcpy(train_spvin_cu, train_spvin_h, sizeof(int)*total_size, cudaMemcpyHostToDevice);
+  cudaMemcpy(train_n_cu, train_n, sizeof(int)*userCount, cudaMemcpyHostToDevice);
+  float *wi_cu;
+  cudaMalloc((void**)&wi_cu, sizeof(float)*itemCount);
+  cudaMemcpy(wi_cu, Wi, sizeof(float)*itemCount, cudaMemcpyHostToDevice);
+  //cout<<"cuda: "<<endl;
+  //std::cout<<"1205 \n";
+  updateUserCuda<<<BLOCK_NUM,THREAD_NUM>>>(prediction_items, rating_items, w_items, v_col, uborder, vborder, userCount, factors, reg, w_cu, uvsv_cu, wi_cu, train_spvdo_cu, train_n_cu, train_spvin_cu);
+  //std::cout<<"1206 \n";
+  cudaMemcpy(uvsv_h, uvsv_cu, uvsvSize, cudaMemcpyDeviceToHost);
+ // std::cout<<"1213 \n";
+  for (int u = 0; u < userCount; u++){
+    for(int i=0; i<factors; i++)
+      U.matrix[u][i] = uvsv_h[u*factors+i];
+  }
+ //std::cout<<"1218 \n";
+
+
+  cudaFree(prediction_items);
+  cudaFree(w_items);
+  cudaFree(rating_items);
+  cudaFree(v_col);
+  //std::cout<<"1225 \n";
+  cudaFree(train_n_cu);
+  cudaFree(w_cu);
+  cudaFree(uvsv_cu);
+  cudaFree(train_spvin_cu);
+  cudaFree(train_spvdo_cu);
+  cudaFree(wi_cu);
+  //std::cout<<"1232 \n";
+  free(train_n);
+  free(w_h);
+  free(uvsv_h);
+  free(train_spvin_h);
+  free(train_spvdo_h);
+  //std::cout<<"1238";
+}
+//=======
+//>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
 
 void MF_fastALS::update_user_thread(int u){
     
