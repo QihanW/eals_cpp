@@ -16,13 +16,6 @@
 #include "SparseMat.h"
 #include "DenseMat.h"
 #include "DenseVec.h"
-/*
-using namespace Eigen;
-typedef SparseMatrix<float> SpMat;
-typedef SparseMatrix<float, RowMajor> SpMat_R;
-typedef Triplet<int> T;
-typedef Matrix<float, Dynamic, 1> VectorXd;
-*/
 
 int topK = 10;
 int userCount;
@@ -30,10 +23,7 @@ int itemCount;
 int user_id;
 int item_id;
 
-
-
 bool LessSort(Rating a, Rating b) { return(a.timestamp < b.timestamp); }
-
 void evaluate_model(MF_fastALS fals, std::vector<Rating> testRatings){
   std::vector<float> hits;
   std::vector<float> ndcgs;
@@ -53,22 +43,12 @@ void evaluate_model(MF_fastALS fals, std::vector<Rating> testRatings){
 
 	}
 	float res[3];
-	//    VectorXd hits;
-	//    VectorXd ndcgs;
-	//    VectorXd precs;
-	//
 	res[0] = std::accumulate(std::begin(hits), std::end(hits), 0.0) / hits.size();
 	res[1] = std::accumulate(std::begin(ndcgs), std::end(ndcgs), 0.0) / ndcgs.size();
 	res[2] = std::accumulate(std::begin(precs), std::end(precs), 0.0) / precs.size();
 
 	std::cout << "<hr, ndcg, prec>: \t" << res[0] << "\t" << res[1] << "\t" << res[2] << std::endl;
 }
-
-/*
-void ReadRatings_GlobalSplit(std::string dir) {
-	
-}
-*/
 
 std::vector<std::vector<Rating>> ReadRatings_HoldOneOut(std::string dir) {
 
@@ -79,7 +59,7 @@ std::vector<std::vector<Rating>> ReadRatings_HoldOneOut(std::string dir) {
 	//std::cout << dir << std::endl;
 
 	std::ifstream  fin;
-	fin.open("yelp.rating");
+	fin.open("amazon.rating");
 	std::string line;
 	
 	if (!fin.is_open()) {
@@ -107,7 +87,6 @@ std::vector<std::vector<Rating>> ReadRatings_HoldOneOut(std::string dir) {
 			timestamp);
 		if (user_ratings.size() < rating.userId + 1) {
 			user_ratings.push_back(std::vector<Rating>());
-     // std::cout << rating.userId << std::endl;
 		}
 		user_ratings.at(rating.userId).push_back(rating);
 		userCount = fmax(userCount, rating.userId);
@@ -136,7 +115,7 @@ int main(int argc, const char * argv[]) {
 	bool showProgress = false;
 	bool showLoss = true;
 	int factors = 32;
-	int maxIter = 50;
+	int maxIter = 10;
 	float reg = 0.01;
 	float alpha = 0.75;
 	float init_mean = 0; 
@@ -164,12 +143,11 @@ int main(int argc, const char * argv[]) {
 	clock_t start = clock();
 	SparseMat trainMatrix(userCount, itemCount);
   
-  int num = 0;
-  vector<map<int, float>> user_no_repeat;
-  user_no_repeat.resize(userCount);
-  vector<map<int, float>> item_no_repeat;
-  item_no_repeat.resize(itemCount);
-	//std::vector<T> tripletList;
+  	int num = 0;
+  	vector<map<int, float>> user_no_repeat;
+  	user_no_repeat.resize(userCount);
+  	vector<map<int, float>> item_no_repeat;
+  	item_no_repeat.resize(itemCount);
 	for (int u = 0; u < userCount; u++) {
 		std::vector<Rating> rating = user_ratings[u];
 		for (int i = (int)rating.size() - 1; i >= 0; i--) {
@@ -178,46 +156,33 @@ int main(int argc, const char * argv[]) {
 			if (i == rating.size() - 1) { // test
 				testRatings.push_back(rating[i]);
 			}
-			else { // train
-				//num++;
-				//trainMatrix.setValue(user_id, item_id, 1);
-        user_no_repeat[user_id].insert(pair<int, float>(item_id, 1));
-        item_no_repeat[item_id].insert(pair<int, float>(user_id, 1));
+			else { 
+        		user_no_repeat[user_id].insert(pair<int, float>(item_id, 1));
+        		item_no_repeat[item_id].insert(pair<int, float>(user_id, 1));
 			}
-			//                trainMatrix.insert(user_id, item_id) =  1;
 		}
 		num += rating.size()-1 - user_no_repeat[u].size();
 	}
 
 	for (int u = 0; u < userCount; u++) {
 		trainMatrix.rows[u].setLength(user_no_repeat[u].size());
-  }
-  for (int i = 0; i < itemCount; i++) {
-    trainMatrix.cols[i].setLength(item_no_repeat[i].size());
-  }
-  for (int u = 0; u < userCount; u++) {
-    map<int, float>::iterator iter;
-    //int len = user_no_repeat[u].size();
-    for(iter = user_no_repeat[u].begin(); iter != user_no_repeat[u].end(); iter++){
-       trainMatrix.setValue(u, iter->first, iter->second );
-       
-    }
-  }
+  	}
+  	for (int i = 0; i < itemCount; i++) {
+    	trainMatrix.cols[i].setLength(item_no_repeat[i].size());
+  	}
+  	for (int u = 0; u < userCount; u++) {
+    	map<int, float>::iterator iter;
+    	for(iter = user_no_repeat[u].begin(); iter != user_no_repeat[u].end(); iter++){
+       		trainMatrix.setValue(u, iter->first, iter->second );  
+    	}
+  	}
 
-	/*
-	num = 0;
-  for (int u = 0; u < itemCount; u++){
-    num += trainMatrix.cols[u].spv.size();
-  }*/
-  std::cout<<"Num of elements: "<<num<<std::endl;
-  //std::cout << trainMatrix.rows.size()<<endl;
-	//    trainMatrix.makeCompressed();
+  	std::cout<<"Num of elements: "<<num<<std::endl;
 	std::cout << "Generated splitted matrices time:" << (float)(clock() - start) / CLOCKS_PER_SEC << std::endl;
 	std::cout << "Data\t" << dataset_name << std::endl;
 	std::cout << "#Users\t" << userCount << std::endl;
 	std::cout << "#items\t" << itemCount << std::endl;
 	std::cout << "#Ratings\t" << trainMatrix.itemCount() << "\t" << "tests\t" << testRatings.size() << std::endl;
-
 	std::cout << "==========================================" << std::endl;
 
 	assert(userCount == testRatings.size());
@@ -225,10 +190,10 @@ int main(int argc, const char * argv[]) {
 		assert(u == testRatings[u].userId);
 
 	MF_fastALS fals(trainMatrix, testRatings, topK, threadNum, factors, maxIter, w0, alpha, reg, init_mean, init_stdev, showProgress, showLoss, userCount, itemCount);
-
 	std::cout << "Start building model" << std::endl;
 	fals.buildModel();
-	evaluate_model(fals, testRatings);
-
+	//evaluate_model(fals, testRatings);
+  	float res = fals.Calculate_RMSE();
+  	std::cout<<"Evaluation loss: "<<res<<std::endl;
 	return 0;
 }

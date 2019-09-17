@@ -70,6 +70,7 @@ public:
 	void update_user_SU(float *oldVector, float *uget);
 	void update_item_thread(int i);
 	void update_item_SV(int i, float *oldVector, float *vget);
+	float Calculate_RMSE();
 	~MF_fastALS();
 
 protected: 
