@@ -136,7 +136,7 @@ int main(int argc, const char * argv[]) {
 	bool showProgress = false;
 	bool showLoss = true;
 	int factors = 64;
-	int maxIter = 20;
+	int maxIter = 5;
 	float reg = 0.01;
 	float alpha = 0.75;
 	float init_mean = 0; 
@@ -188,12 +188,21 @@ int main(int argc, const char * argv[]) {
 		}
 		num += rating.size()-1 - user_no_repeat[u].size();
 	}
-
+  
+  //int max_user, max_item;
+  //max_user = 0;
+  //max_item = 0;
+  //int zero = 0;
 	for (int u = 0; u < userCount; u++) {
 		trainMatrix.rows[u].setLength(user_no_repeat[u].size());
+		//if (user_no_repeat[u].size() == 0)
+		  //zero++;
+		 // max_user = user_no_repeat[u].size();
   }
   for (int i = 0; i < itemCount; i++) {
     trainMatrix.cols[i].setLength(item_no_repeat[i].size());
+    //if (item_no_repeat[i].size() > max_item)  
+     // max_item = item_no_repeat[i].size();  
   }
   for (int u = 0; u < userCount; u++) {
     map<int, float>::iterator iter;

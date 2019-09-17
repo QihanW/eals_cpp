@@ -28,40 +28,40 @@ LOOP BEGIN at main.cpp(175,3)
    remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ /usr/include/c++/7.4.0/bits/stl_map.h(809,34) ]
 LOOP END
 
-LOOP BEGIN at main.cpp(192,2)
+LOOP BEGIN at main.cpp(196,2)
    remark #15523: loop was not vectorized: loop control variable u was found, but loop iteration count cannot be computed before executing the loop
 LOOP END
 
-LOOP BEGIN at main.cpp(195,3)
+LOOP BEGIN at main.cpp(202,3)
    remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
 LOOP END
 
-LOOP BEGIN at main.cpp(201,48)
+LOOP BEGIN at main.cpp(210,48)
    remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
 LOOP END
 
-LOOP BEGIN at main.cpp(224,2)
-   remark #15520: loop was not vectorized: loop with multiple exits cannot be vectorized unless it meets search loop idiom criteria   [ main.cpp(225,3) ]
+LOOP BEGIN at main.cpp(233,2)
+   remark #15520: loop was not vectorized: loop with multiple exits cannot be vectorized unless it meets search loop idiom criteria   [ main.cpp(234,3) ]
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(235,2)
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(244,2)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(235,2)
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(244,2)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
    remark #15346: vector dependence: assumed OUTPUT dependence between call:std::_Rb_tree<std::map<int, float, std::less<int>, std::all (1856:4) and call:operator delete(void *) (125:2)
 
-   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(235,2)
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(244,2)
       remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
 
-      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(235,2)
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(244,2)
          remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
 
-         LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(235,2)
+         LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(244,2)
             remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
 
-            LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(235,2)
+            LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into main.cpp(244,2)
                remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
             LOOP END
          LOOP END
@@ -69,7 +69,7 @@ LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into ma
    LOOP END
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(235,2)
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_construct.h(107,4) inlined into main.cpp(244,2)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
 LOOP END
 
@@ -81,8 +81,8 @@ LOOP BEGIN at main.cpp(173,2)
    remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ main.cpp(174,44) ]
 LOOP END
 
-LOOP BEGIN at main.cpp(198,3)
-   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ main.cpp(202,20) ]
+LOOP BEGIN at main.cpp(207,3)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ main.cpp(211,20) ]
 LOOP END
 ===========================================================================
 
