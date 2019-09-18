@@ -114,7 +114,7 @@ int main(int argc, const char * argv[]) {
 	float w0 = 10;
 	bool showProgress = false;
 	bool showLoss = true;
-	int factors = 32;
+	int factors = 64;
 	int maxIter = 10;
 	float reg = 0.01;
 	float alpha = 0.75;

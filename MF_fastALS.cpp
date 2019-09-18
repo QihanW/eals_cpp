@@ -20,6 +20,21 @@
 
 #define NUM_float 8
 
+#define GETVALUE(f, k, val, SV) \
+  val = SV.matrix[f][k];
+
+#define SUUPDATE(f, k, val) \
+  tmp = 0 - u_clone.matrix[u][f] * u_clone.matrix[u][k] + U.matrix[u][f] * U.matrix[u][k];\
+  val += tmp;
+
+#define SVUPDATE(f, k, val) \
+  tmp = (0 - v_clone.matrix[u][f] * v_clone.matrix[u][k] + V.matrix[u][f] * V.matrix[u][k]) *  Wi[u];\
+  val += tmp;
+
+#define SETVALUE(f, k, val, SV) \
+  SV.matrix[f][k] = val; \
+  SV.matrix[k][f] = val;
+
 MF_fastALS::MF_fastALS(SparseMat trainMatrix1, std::vector<Rating> testRatings1, int topK1, int threadNum1, int factors1, int maxIter1, float w01, float alpha1, float reg1, float init_mean1, float init_stdev1, bool showProgress1, bool showLoss1, int userCount1, int itemCount1){
 	trainMatrix = trainMatrix1;
 	testRatings = testRatings1;
@@ -93,7 +108,7 @@ void MF_fastALS::setUV(DenseMat U, DenseMat V) {
 }
 
 void MF_fastALS::buildModel() {
-	omp_set_num_threads(32);
+	omp_set_num_threads(1);
 	float loss_pre = FLT_MAX;
 
 	for (int iter = 0; iter < maxIter; iter++) {
@@ -111,27 +126,64 @@ void MF_fastALS::buildModel() {
 		#pragma omp parallel for schedule(dynamic, 64) shared(trainMatrix, W, U, SV, V, Wi)
 		for (int u = 0; u < userCount; u++) {
 			update_user_thread(u);  
-      //update_user_thread(u+1);
-      //update_user_thread(u+2);
-      //update_user_thread(u+3);
 		}
     
     double end = omp_get_wtime();
-    float tmp1, tmp2, tmp3, tmp4;
+    float tmp, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15, val16;
     std::cout<<"First part time: "<<end-start<<std::endl;
-    for (int f = 0; f < factors; f++) {                                                                                           
-	    for (int k = 0; k <= f; k++) {
-	      float val = SU.matrix[f][k];
-	      #pragma omp parallel for reduction(+:val) 
-	      for (int u = 0; u < userCount; u+=4){
-		      tmp1 = 0 - u_clone.matrix[u][f] * u_clone.matrix[u][k] + U.matrix[u][f] * U.matrix[u][k];
-          tmp2 = 0 - u_clone.matrix[u+1][f] * u_clone.matrix[u+1][k] + U.matrix[u+1][f] * U.matrix[u+1][k];
-          tmp3 = 0 - u_clone.matrix[u+2][f] * u_clone.matrix[u+2][k] + U.matrix[u+2][f] * U.matrix[u+2][k];
-          tmp4 = 0 - u_clone.matrix[u+3][f] * u_clone.matrix[u+3][k] + U.matrix[u+3][f] * U.matrix[u+3][k];
-          val += (tmp1+tmp2+tmp3+tmp4);
+    for (int f = 0; f < factors; f+=4) {                                                                                           
+	    for (int k = 0; k <= f; k+=4) {
+	      GETVALUE(f, k, val1, SU);
+        GETVALUE(f, k+1, val2, SU);
+        GETVALUE(f, k+2, val3, SU);
+        GETVALUE(f, k+3, val4, SU);
+        GETVALUE(f+1, k, val5, SU);
+        GETVALUE(f+1, k+1, val6, SU);
+        GETVALUE(f+1, k+2, val7, SU);
+        GETVALUE(f+1, k+3, val8, SU);
+        GETVALUE(f+2, k, val9, SU);
+        GETVALUE(f+2, k+1, val10, SU);
+        GETVALUE(f+2, k+2, val11, SU);
+        GETVALUE(f+2, k+3, val12, SU);
+        GETVALUE(f+3, k, val13, SU);
+        GETVALUE(f+3, k+1, val14, SU);
+        GETVALUE(f+3, k+2, val15, SU);
+        GETVALUE(f+3, k+3, val16, SU);
+	      #pragma omp parallel for schedule(dynamic, 64) reduction(+: val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15, val16) 
+	      for (int u = 0; u < userCount; u++){
+		      SUUPDATE(f, k, val1);
+          SUUPDATE(f, k+1, val2);
+          SUUPDATE(f, k+2, val3);
+          SUUPDATE(f, k+3, val4);
+          SUUPDATE(f+1, k, val5);
+          SUUPDATE(f+1, k+1, val6);
+          SUUPDATE(f+1, k+2, val7);
+          SUUPDATE(f+1, k+3, val8);
+          SUUPDATE(f+2, k, val9);
+          SUUPDATE(f+2, k+1, val10);
+          SUUPDATE(f+2, k+2, val11);
+          SUUPDATE(f+2, k+3, val12);
+          SUUPDATE(f+3, k, val13);
+          SUUPDATE(f+3, k+1, val14);
+          SUUPDATE(f+3, k+2, val15);
+          SUUPDATE(f+3, k+3, val16);
         }
-		    SU.matrix[f][k] = val;                                                      
-		    SU.matrix[k][f] = val;                                                                                                                                 
+		    SETVALUE(f, k, val1, SU);
+        SETVALUE(f, k+1, val2, SU);
+        SETVALUE(f, k+2, val3, SU);
+        SETVALUE(f, k+3, val4, SU);
+        SETVALUE(f+1, k, val5, SU);
+        SETVALUE(f+1, k+1, val6, SU);
+        SETVALUE(f+1, k+2, val7, SU);
+        SETVALUE(f+1, k+3, val8, SU);
+        SETVALUE(f+2, k, val9, SU);
+        SETVALUE(f+2, k+1, val10, SU);
+        SETVALUE(f+2, k+2, val11, SU);
+        SETVALUE(f+2, k+3, val12, SU);
+        SETVALUE(f+3, k, val13, SU);
+        SETVALUE(f+3, k+1, val14, SU);
+        SETVALUE(f+3, k+2, val15, SU);
+        SETVALUE(f+3, k+3, val16, SU);                                                                                                                                
       }     
     }
     std::cout<<"The second part: "<<omp_get_wtime() - end<<std::endl; 
@@ -146,22 +198,64 @@ void MF_fastALS::buildModel() {
     }
 	  
 	  start = omp_get_wtime();
-	  #pragma omp parallel for  shared(trainMatrix, W, U, SU, V, Wi)
+	  #pragma omp parallel for schedule(dynamic, 64) shared(trainMatrix, W, U, SU, V, Wi)
 	  for (int i = 0; i < itemCount; i++) {
       update_item_thread(i);
 	  }
 
-    for (int f = 0; f < factors; f++) {
-	    for (int k = 0; k <= f; k++) {
-		    float val = SV.matrix[f][k];
- 		    #pragma omp parallel for reduction(+:val)
+    for (int f = 0; f < factors; f+=4) {
+	    for (int k = 0; k <= f; k+=4) {
+		    GETVALUE(f, k, val1, SV);
+        GETVALUE(f, k+1, val2, SV);
+        GETVALUE(f, k+2, val3, SV);
+        GETVALUE(f, k+3, val4, SV);
+        GETVALUE(f+1, k, val5, SV);
+        GETVALUE(f+1, k+1, val6, SV);
+        GETVALUE(f+1, k+2, val7, SV);
+        GETVALUE(f+1, k+3, val8, SV);
+        GETVALUE(f+2, k, val9, SV);
+        GETVALUE(f+2, k+1, val10, SV);
+        GETVALUE(f+2, k+2, val11, SV);
+        GETVALUE(f+2, k+3, val12, SV);
+        GETVALUE(f+3, k, val13, SV);
+        GETVALUE(f+3, k+1, val14, SV);
+        GETVALUE(f+3, k+2, val15, SV);
+        GETVALUE(f+3, k+3, val16, SV);
+ 		    #pragma omp parallel for schedule(dynamic, 64) reduction(+:val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15, val16)
   		  for (int u = 0; u < itemCount; u++){
- 			    float tmp = 0 - v_clone.matrix[u][f] * v_clone.matrix[u][k] + V.matrix[u][f] * V.matrix[u][k] ;
-			    tmp = tmp *  Wi[u];
-			    val += tmp;
+ 			    SVUPDATE(f, k, val1);
+          SVUPDATE(f, k+1, val2);
+          SVUPDATE(f, k+2, val3);
+          SVUPDATE(f, k+3, val4);
+          SVUPDATE(f+1, k, val5);
+          SVUPDATE(f+1, k+1, val6);
+          SVUPDATE(f+1, k+2, val7);
+          SVUPDATE(f+1, k+3, val8);
+          SVUPDATE(f+2, k, val9);
+          SVUPDATE(f+2, k+1, val10);
+          SVUPDATE(f+2, k+2, val11);
+          SVUPDATE(f+2, k+3, val12);
+          SVUPDATE(f+3, k, val13);
+          SVUPDATE(f+3, k+1, val14);
+          SVUPDATE(f+3, k+2, val15);
+          SVUPDATE(f+3, k+3, val16);
 		    }
-        SV.matrix[f][k] = val;
-        SV.matrix[k][f] = val;
+        SETVALUE(f, k, val1, SV);
+        SETVALUE(f, k+1, val2, SV);
+        SETVALUE(f, k+2, val3, SV);
+        SETVALUE(f, k+3, val4, SV);
+        SETVALUE(f+1, k, val5, SV);
+        SETVALUE(f+1, k+1, val6, SV);
+        SETVALUE(f+1, k+2, val7, SV);
+        SETVALUE(f+1, k+3, val8, SV);
+        SETVALUE(f+2, k, val9, SV);
+        SETVALUE(f+2, k+1, val10, SV);
+        SETVALUE(f+2, k+2, val11, SV);
+        SETVALUE(f+2, k+3, val12, SV);
+        SETVALUE(f+3, k, val13, SV);
+        SETVALUE(f+3, k+1, val14, SV);
+        SETVALUE(f+3, k+2, val15, SV);
+        SETVALUE(f+3, k+3, val16, SV);  
       }
     }    
     double time_item_update = omp_get_wtime() - start;;
