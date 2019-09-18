@@ -2,15 +2,13 @@
 #include <iostream>
 using namespace std;
 
-#define BLOCK_NUM 32                                                            
-#define THREAD_NUM 256 
+#define BLOCK_NUM 1                                                           
+#define THREAD_NUM 4 
 
+/*./run
 void updateUserSchedule2(float **trainMatrixdo, float **W, float **U, int **trainMatrixin, float **V, float **SV, float *Wi);
 
-<<<<<<< HEAD
-/*
-=======
->>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
+
 __global__ void updateUserCuda(float **prediction_items, float **rating_items, float **w_items, int userCount, int factors, float reg, float **w_cu1, float **u_cu, float **v_cu, float *wi_cu, float **sv_cu, float **train_spvdo_cu, int *train_n_cu, int **train_spvin_cu, float **v_col){
   int tid = threadIdx.x;
   int bid = blockIdx.x;
@@ -180,8 +178,6 @@ __global__ void updateUserCuda2(float **prediction_items, float **rating_items, 
       }
     }
   }
-<<<<<<< HEAD
-}*/
 
 __global__ void updateUserCuda(float *prediction_items, float *rating_items, float *w_items, float *v_col, int uborder, int vborder, int userCount, int factors, float reg, float *w_cu, float *uvsv_cu, float *wi_cu, float *train_spvdo_cu, int *train_n_cu, int *train_spvin_cu){
   int tid = threadIdx.x;
@@ -280,10 +276,6 @@ void updateUserCpp(float *prediction_items, float *rating_items, float *w_items,
       denom +=sv_cu[f][f] + reg;
       u_cu[u][f] = numer / denom;
       tmp_uget = numer / denom;
-//<<<<<<< HEAD
-      //printf("%f ", tmp_uget);
-//=======
-//>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
       for (int j = 0; j<size_item; j++){
         prediction_items[j] += tmp_uget * v_col[j];
       }
@@ -506,15 +498,7 @@ void updateUserSchedule2(float **trainMatrixdo, float **W, float **U, int **trai
 }
 
 /*
-=======
-
-
->>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
 void updateUserSchedule2(float **trainMatrixdo, float **W, float **U, int **trainMatrixin, float **V, float **SV, float *Wi){                                          
-  int userCount = 10;
-  int itemCount = 20;
-  int factors = 8;
-  float reg = 0;
   int max_size = 5, size;                                                   
   float **prediction_items;                                                      
   float **rating_items;                                                          
@@ -824,14 +808,247 @@ void MF_fastALS::updateUserSchedule3(float **trainMatrixdo, float **W, float **U
   free(train_spvdo_h);
 
 }
-<<<<<<< HEAD
+
 */
+/*
+__global__ void computeSUValue (float *u_clone, float *u, int f, int k, int factors,  float *result, int userCount){
+  __shared__ float cache[THREAD_NUM];
+  int tid = threadIdx.x;
+  int bid = blockIdx.x;
+  int cacheIndex = threadIdx.x;
 
+  float temp = 0;
+  int index;
+  for(int i = bid*THREAD_NUM+tid; i < userCount; i+=BLOCK_NUM*THREAD_NUM){
+    index = i * factors;
+    temp = temp - u_clone[index+f] * u_clone[index+k] + u[index+f] * u[index+k];
+  }
 
-//=======
-//>>>>>>> da1f5daa4a28ef05be26223dd8ce61c51ef97c94
+  cache[cacheIndex] = temp;
+  __syncthreads();
+
+  int i = blockDim.x/2;
+  while (i != 0) {
+    if (cacheIndex < i)
+      cache[cacheIndex] += cache[cacheIndex + i];
+    __syncthreads();
+    i /= 2;
+  }
+  if (cacheIndex == 0)
+    result[blockIdx.x] = cache[0];
+}
+
+void testUpdateSu(){
+  int userCount = 10;
+  int factors = 5;
+
+  float U[userCount][factors];
+  float u_clone[userCount][factors];
+  float res_cpp[factors][factors];
+  float res_cuda[factors][factors];
+
+  for(int i=0; i<userCount; i++){
+    for(int j=0; j<factors; j++){
+      U[i][j] = i;
+      u_clone[i][j] = i+j;
+    }
+  }
+
+  //cpp version
+  float tmp;
+    for (int f = 0; f < factors; f++) {                                                                                           
+	    for (int k = 0; k <= f; k++) {
+        float val = 0;
+	      #pragma omp parallel for reduction(+:val) 
+	      for (int u = 0; u < userCount; u++){
+		      tmp = 0 - u_clone[u][f] * u_clone[u][k] + U[u][f] * U[u][k];
+          val += tmp;
+        }
+		    res_cpp[f][k] = val;                                                      
+		    res_cpp[k][f] = val;                                                                                                                                 
+      }     
+    }
+
+  //cuda version
+  int byteSize = sizeof(float)*userCount*factors;
+  float *U_clone_cu, *U_cu, *U_h, *U_clone_h, *result, *result_cu;
+  U_h = (float *)malloc(byteSize);
+  U_clone_h = (float *)malloc(byteSize);
+  result = (float *)malloc(sizeof(float)*(BLOCK_NUM));
+  cudaMalloc((void**)&U_clone_cu, byteSize);
+  cudaMalloc((void**)&U_cu, byteSize);
+  cudaMalloc((void**)&result_cu, sizeof(float)*(BLOCK_NUM));
+  int ii = 0;
+
+  #pragma omp parallel for
+  for (int u = 0; u < userCount; u++){
+    for(int j = 0; j < factors; j++){
+      U_h[ii] = U[u][j];
+      U_clone_h[ii] = u_clone[u][j];
+      ii++;
+    }
+  }
+
+  cudaMemcpy(U_clone_cu, U_clone_h, byteSize, cudaMemcpyHostToDevice);
+  cudaMemcpy(U_cu, U_h, byteSize, cudaMemcpyHostToDevice);
+    
+    //int indexf, indexk;
+    for (int f = 0; f < factors; f++) { 
+      for (int k = 0; k <= f; k++) {                                          
+        float val = 0;
+        computeSUValue<<<BLOCK_NUM,THREAD_NUM,0>>>(U_clone_cu, U_cu, f, k, factors, result_cu, userCount);
+        cudaMemcpy(result, result_cu, sizeof(float)*(BLOCK_NUM), cudaMemcpyDeviceToHost);
+        #pragma omp parallel for reduction(+:val)                          
+        for (int u = 0; u < BLOCK_NUM; u++){                                  
+          val += result[u];                                                       
+        }                                                                     
+        res_cuda[f][k] = val;
+        res_cuda[k][f] = val;
+       }                                                                  
+    }
+
+    cudaFree(U_clone_cu);
+    cudaFree(U_cu);
+    cudaFree(result_cu);
+    cudaFreeHost(U_clone_h);
+    cudaFreeHost(U_h);
+    cudaFreeHost(result);
+
+    for(int i=0; i<factors; i++){
+      for(int j=0; j<factors; j++){
+        std::cout<<"i: "<<i<<" j: "<<j<<" cpp: "<<res_cpp[i][j]<<" cuda: "<<res_cuda[i][j]<<endl;
+      }
+    }
+}
+*/
+__global__ void computeSVValue (float *u_clone, float *u, int f, int k, int factors, float *result, int userCount, float *wi_cu){
+  __shared__ float cache[THREAD_NUM];
+  int tid = threadIdx.x;
+  int bid = blockIdx.x;
+  int cacheIndex = threadIdx.x;
+
+  float temp = 0;
+  float val = 0;
+  int index;
+  for(int i = bid*THREAD_NUM+tid; i < userCount; i+=BLOCK_NUM*THREAD_NUM){
+    index = i * factors;
+    temp = 0 - u_clone[index+f] * u_clone[index+k] + u[index+f] * u[index+k];
+    //printf("%f %f %f %f\n", u_clone[index+f], u_clone[index+k], u[index+f], u[index+k]);
+    //printf("%f ", temp);
+    val += temp*wi_cu[i];
+  }
+
+  cache[cacheIndex] = val;
+  __syncthreads();
+
+  int i = blockDim.x/2;
+  while (i != 0) {
+    if (cacheIndex < i)
+      cache[cacheIndex] += cache[cacheIndex + i];
+    __syncthreads();
+    i /= 2;
+  }
+  if (cacheIndex == 0)
+    result[blockIdx.x] = cache[0];
+  
+}
+
+void testUpdateSv(){
+  int itemCount = 10;
+  int factors = 5;
+  float V[itemCount][factors];
+  float v_clone[itemCount][factors];
+  float wii[itemCount];
+  float res_cpp[factors][factors];
+  float res_cuda[factors][factors];
+
+  for(int i=0; i<itemCount; i++){
+    for(int j=0; j<factors; j++){
+      V[i][j] = 2;
+      v_clone[i][j] = 1;
+    }
+    wii[i] = 0.5;
+  }
+
+  //cpp version
+  float tmp;
+    for (int f = 0; f < factors; f++) {
+	    for (int k = 0; k <= f; k++) {
+		    float val = 0;
+ 		    #pragma omp parallel for reduction(+:val)
+  		  for (int u = 0; u < itemCount; u++){
+ 			    tmp = 0 - v_clone[u][f] * v_clone[u][k] + V[u][f] * V[u][k] ;
+           //cout<<tmp<<" ";
+           tmp = tmp *  wii[u];
+          val += tmp;
+          //cout<<v_clone[u][f]<<" "<<v_clone[u][k]<<" "<<V[u][f]<<" "<<V[u][k]<<"\n";
+          //cout<<tmp<<" ";
+		    }
+        res_cpp[f][k] = val;
+        res_cpp[k][f] = val;
+      }
+    }
+   //cout<<"cpp is okay"<<endl; 
+
+  int byteSize = sizeof(float)*itemCount*factors;
+    float *V_clone_cu, *V_cu, *V_h, *V_clone_h, *resultv, *resultv_cu, *wi_cu;
+    V_h = (float *)malloc(byteSize);
+    V_clone_h = (float *)malloc(byteSize);
+    resultv = (float *)malloc(sizeof(float)*(BLOCK_NUM));
+    cudaMalloc((void**)&V_clone_cu, byteSize);
+    cudaMalloc((void**)&V_cu, byteSize);
+    cudaMalloc((void**)&wi_cu, sizeof(float)*itemCount);
+    cudaMalloc((void**)&resultv_cu, sizeof(float)*(BLOCK_NUM));
+    int ii = 0;
+
+    #pragma omp parallel for
+    for (int u = 0; u < itemCount; u++){
+      for(int j = 0; j < factors; j++){
+        V_h[ii] = V[u][j];
+        V_clone_h[ii] = v_clone[u][j];
+        ii++;
+      }
+    }
+   //cout<<"1005 is okay"<<endl;
+    cudaMemcpy(V_clone_cu, V_clone_h, byteSize, cudaMemcpyHostToDevice);
+    cudaMemcpy(V_cu, V_h, byteSize, cudaMemcpyHostToDevice);
+    cudaMemcpy(wi_cu, wii, sizeof(float)*itemCount, cudaMemcpyHostToDevice);
+
+    for (int f = 0; f < factors; f++) {
+      for (int k = 0; k <= f; k++) {
+        float val = 0;
+        computeSVValue<<<BLOCK_NUM,THREAD_NUM,0>>>(V_clone_cu, V_cu, f, k, factors, resultv_cu, itemCount, wi_cu);
+        cudaMemcpy(resultv, resultv_cu, sizeof(float)*(BLOCK_NUM), cudaMemcpyDeviceToHost);
+        #pragma omp parallel for reduction(+:val)
+        for (int u = 0; u < BLOCK_NUM; u++){
+          val += resultv[u];
+        } 
+        //cout<<val<<endl;
+        res_cuda[f][k] = val;
+        res_cuda[k][f] = val;
+      }
+    }
+    //cout<<"1023 is okay"<<endl;
+    cudaFree(V_clone_cu);
+    cudaFree(V_cu);
+    cudaFree(resultv_cu);
+    cudaFree(wi_cu);
+    free(V_h);
+    free(V_clone_h);
+    free(resultv);
+    
+    for(int i=0; i<factors; i++){
+      for(int j=0; j<factors; j++){
+        if(res_cpp[i][j]!=res_cuda[i][j])
+          std::cout<<"i: "<<i<<" j: "<<j<<" cpp: "<<res_cpp[i][j]<<" cuda: "<<res_cuda[i][j]<<endl;
+      }
+    }
+    
+}
 
 int main(){
-  updateUserSchedule1();
+  //updateUserSchedule1();
+  //testUpdateSu();
+  testUpdateSv();
   return 0;
 }

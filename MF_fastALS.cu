@@ -20,8 +20,8 @@
 
 #define NUM_float 8
 #define TILE_SIZE 8
-#define BLOCK_NUM 64
-#define THREAD_NUM 512
+#define BLOCK_NUM 128
+#define THREAD_NUM 256
 
 MF_fastALS::MF_fastALS(SparseMat trainMatrix1, std::vector<Rating> testRatings1,
 	int topK1, int threadNum1, int factors1, int maxIter1, float w01, float alpha1, float reg1,
@@ -134,14 +134,15 @@ __global__ void computeSVValue (float *u_clone, float *u, int f, int k, int fact
   int cacheIndex = threadIdx.x;
 
   float temp = 0;
+  float val = 0;
   int index;
   for(int i = bid*THREAD_NUM+tid; i < userCount; i+=BLOCK_NUM*THREAD_NUM){
     index = i * factors;
-    temp = wi_cu[i] * (0 - u_clone[index+f] * u_clone[index+k] + u[index+f] * u[index+k]);
-    //temp = temp * wi_cu[i];
+    temp = 0 - u_clone[index+f] * u_clone[index+k] + u[index+f] * u[index+k];
+    val += temp * wi_cu[i];
   }
 
-  cache[cacheIndex] = temp;
+  cache[cacheIndex] = val;
   __syncthreads();
 
   int i = blockDim.x/2;
@@ -219,7 +220,26 @@ void MF_fastALS::buildModel() {
     cudaFreeHost(result);
 
     double time_user_update = omp_get_wtime() - start;
-		std::cout << "Time of user_update: " <<time_user_update<< std::endl;
+    std::cout << "Time of user_update: " <<time_user_update<< std::endl;
+    
+    /*
+    float tmp;
+    for (int f = 0; f < factors; f++) {                                                                                           
+	    for (int k = 0; k <= f; k++) {
+	      float val = SU.matrix[f][k];
+	      #pragma omp parallel for reduction(+:val) 
+	      for (int u = 0; u < userCount; u++){
+		      tmp = 0 - u_clone.matrix[u][f] * u_clone.matrix[u][k] + U.matrix[u][f] * U.matrix[u][k];
+          val += tmp;
+        }
+		    SU.matrix[f][k] = val;                                                      
+		    SU.matrix[k][f] = val;                                                                                                                                 
+      }     
+    }
+    double time_user_update = omp_get_wtime() - start;
+    std::cout << "Time of user_update: " <<time_user_update<< std::endl;
+    */
+
 	  DenseMat v_clone(itemCount, factors);
     #pragma omp parallel for 
     for (int i = 0; i<itemCount; i++){
@@ -233,6 +253,7 @@ void MF_fastALS::buildModel() {
       update_item_thread(i);
     }
     //std::cout<<"First part in updating itme"<<omp_get_wtime()-start<<std::endl;
+    
     byteSize = sizeof(float)*itemCount*factors;
     float *wii, *V_clone_cu, *V_cu, *V_h, *V_clone_h, *resultv, *resultv_cu, *wi_cu;
     V_h = (float *)malloc(byteSize);
@@ -283,6 +304,24 @@ void MF_fastALS::buildModel() {
 
     double time_item_update = omp_get_wtime() - start;;
     std::cout << "Time of item_update: " << time_item_update << std::endl;
+    /*
+    float tmp;
+    for (int f = 0; f < factors; f++) {
+	    for (int k = 0; k <= f; k++) {
+		    float val = SV.matrix[f][k];
+ 		    #pragma omp parallel for reduction(+:val)
+  		  for (int u = 0; u < itemCount; u++){
+ 			    tmp = 0 - v_clone.matrix[u][f] * v_clone.matrix[u][k] + V.matrix[u][f] * V.matrix[u][k] ;
+			    tmp = tmp *  Wi[u];
+			    val += tmp;
+		    }
+        SV.matrix[f][k] = val;
+        SV.matrix[k][f] = val;
+      }
+    }
+    double time_item_update = omp_get_wtime() - start;;
+    std::cout << "Time of item_update: " << time_item_update << std::endl;
+    */
 		// Show loss
 		if (showloss)
 			loss_pre = showLoss(iter, (time_user_update+time_item_update), loss_pre);
