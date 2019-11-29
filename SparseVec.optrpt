@@ -1,0 +1,56 @@
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+
+Begin optimization report for: SparseVec::setVector(SparseVec *, SparseVec)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at SparseVec.cpp(39,2)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+===========================================================================
+
+Begin optimization report for: SparseVec::getValue(SparseVec *, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at SparseVec.cpp(46,2)
+   remark #15520: loop was not vectorized: loop with multiple exits cannot be vectorized unless it meets search loop idiom criteria   [ SparseVec.cpp(48,14) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: SparseVec::getVector(SparseVec *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at SparseVec.cpp(65,3)
+<Peeled loop for vectorization>
+LOOP END
+
+LOOP BEGIN at SparseVec.cpp(65,3)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at SparseVec.cpp(65,3)
+<Alternate Alignment Vectorized Loop>
+LOOP END
+
+LOOP BEGIN at SparseVec.cpp(65,3)
+<Remainder loop for vectorization>
+LOOP END
+===========================================================================
+
+Begin optimization report for: SparseVec::indexList(std::vector<int, std::allocator<int>> *, SparseVec *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at SparseVec.cpp(73,4)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+===========================================================================

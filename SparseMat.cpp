@@ -7,9 +7,9 @@
 using namespace std;
 
 /*
-typedef SparseVector<double> SpVec;
-typedef SparseMatrix<double> SpMat;
-typedef SparseMatrix<double, RowMajor> SpMat_R;
+typedef SparseVector<float> SpVec;
+typedef SparseMatrix<float> SpMat;
+typedef SparseMatrix<float, RowMajor> SpMat_R;
 */
 
 SparseMat::SparseMat() {
@@ -46,24 +46,24 @@ void SparseMat::setMatC(SpMat matc) {
 }
 */
 
-void SparseMat::setValue(int i, int j, double value) {
+void SparseMat::setValue(int i, int j, float value) {
 	this->rows[i].setValue(j, value);
 	this->cols[j].setValue(i, value);
 }
 /*
-void SparseMat::setValueC(int i, int j, double value) {
+void SparseMat::setValueC(int i, int j, float value) {
 	this->mat_c.insert(i, j) = value;
 }
 
-void SparseMat::setValueR(int i, int j, double value) {
+void SparseMat::setValueR(int i, int j, float value) {
 	this->mat_r.insert(i, j) = value;
 }
 
-double SparseMat::getValueC(int i, int j) {
+float SparseMat::getValueC(int i, int j) {
 	return this->mat_c.coeff(i, j);
 }
 
-double SparseMat::getValueR(int i, int j) {
+float SparseMat::getValueR(int i, int j) {
 	return this->mat_r.coeff(i, j);
 }
 */
@@ -78,7 +78,7 @@ SparseVec SparseMat::getRowRef(int index) {
 	return this->rows[index];
 }
 /*
-double SparseMat::getRowInIndex(int index) {
+float SparseMat::getRowInIndex(int index) {
 	return this->mat_r.innerIndexPtr()[index];
 }*/
 
@@ -86,11 +86,11 @@ SparseVec SparseMat::getColRef(int index) {
 	return this->cols[index];
 }
 /*
-double SparseMat::getColInIndex(int index) {
+float SparseMat::getColInIndex(int index) {
 	return this->mat_c.innerIndexPtr()[index];
 }*/
 
-double SparseMat::getValue(int r, int c){
+float SparseMat::getValue(int r, int c){
   return this->rows[r].getValue(c);
 }
 

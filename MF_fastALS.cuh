@@ -36,24 +36,26 @@ public:
 	SparseMat trainMatrix_R;
 	SparseMat W;  // weight for each positive instance in trainMatrix
 
+	float *Wi;
+	
+	//replace U, V, SV
+	float *u_values;
+	float *v_values;
+	float *sv_values;
+
 	std::vector<Rating> testRatings;
-	//float * prediction_users;
-	//float * prediction_items;
-  //float * rating_users;
-  //float *rating_items;
-	//float * w_users; 
-	//float * w_items;
-	float * Wi; // weight for negative instances on item i.
-  float su_one[256];                                              
-  float sv_one[256]; 
+  	float su_one[256];                                              
+  	float sv_one[256]; 
 	bool showprogress;
 	bool showloss;
+	//index
+	int *partition_index;
 	
 
 	MF_fastALS(SparseMat trainMatrix, std::vector<Rating> testRatings,
 		int topK, int threadNum, int factors, int maxIter, float w0, float alpha, float reg,
 		float init_mean, float init_stdev, bool showProgress, bool showLoss, int userCount,
-		int itemCount);
+		int itemCount, int update_index[]);
 	void setTrain(SparseMat trainMatrix);
 	void setUV(DenseMat U, DenseMat V);
 	void buildModel();
@@ -71,6 +73,11 @@ public:
 	void update_item_thread(int i);
 	void update_item_SV(int i, float *oldVector, float *vget);
 	float Calculate_RMSE();
+	void updateUserSchedule1();
+	void updateUserSchedule2();
+	void updateItemSchedule();
+	void update_user_cpu(int u, float *u_numer_h, float *u_denom_h);
+	//void update_user_cpu(int u, float *u_numer_h, float *u_denom_h, float *preidiction_items, int *train_n);
 	~MF_fastALS();
 
 protected: 

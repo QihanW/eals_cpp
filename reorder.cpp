@@ -3,7 +3,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <numeric>
 #include <algorithm>
 #include <map>
 #include <cmath>
@@ -127,7 +126,7 @@ int main(int argc, const char * argv[]) {
 	bool showProgress = false;
 	bool showLoss = true;
 	int factors = 64;
-	int maxIter = 20;
+	int maxIter = 5;
 	float reg = 0.01;
 	float alpha = 0.75;
 	float init_mean = 0; 
@@ -161,7 +160,7 @@ int main(int argc, const char * argv[]) {
     item_no_repeat.resize(itemCount);
 	float every_score;
 	//reorder in both decreasing user number and item number
-	
+	/*
 	IndexCountMap reorder_user[userCount];
 	IndexCountMap reorder_item[itemCount];
 	int map_user[userCount];
@@ -185,16 +184,14 @@ int main(int argc, const char * argv[]) {
 		}
 	}
 	sort(reorder_user, reorder_user+userCount, compareUser);
-	sort(reorder_item, reorder_item+itemCount, compareitem);
+	sort(reorder_item, reorder_item+itemCount, compareUser);
 	for(int i=0; i<userCount; i++){
 		map_user[reorder_user[i].index] = i;
 	}	
 	for(int i=0; i<itemCount; i++){
 		map_item[reorder_item[i].index] = i;
 	}	
-	
-
-	//
+	*/
 	for (int u = 0; u < userCount; u++) {
 		std::vector<Rating> rating = user_ratings[u];
 		for (int i = (int)rating.size() - 1; i >= 0; i--) {
@@ -212,72 +209,17 @@ int main(int argc, const char * argv[]) {
 			}
 		}
 	}
-	
-	//parition users into blocks and make it balance
-	int block_num = 512;
-	//IndexCountMap reorder_user[userCount];
-	int update_index[block_num+1];
-	
-	int sum_index[block_num];
-	vector<int> contain_index[block_num];
-	for (int u = 0; u < userCount; u++){
-		reorder_user[u].index = u;
-		reorder_user[u].count = user_no_repeat[u].size();
-	}
-	
-	//sort(reorder_user, reorder_user+userCount, compareUser);
-	for(int i=0; i<block_num; i++){
-		contain_index[i].push_back(i);
-		sum_index[i] = reorder_user[i].count;
-	}
-	int user_index = block_num;
-	int min_index;
-	int min_value;
-	while (user_index < userCount){
-		min_index = 0;
-		min_value = sum_index[0];
-		for(int i=1; i<block_num; i++){
-			if(sum_index[i] < min_value){
-				min_index = i;
-				min_value = sum_index[i];
-			}
-		}
-		contain_index[min_index].push_back(user_index);
-		sum_index[min_index] += reorder_user[user_index].count;
-		user_index++;
-	}
-	
-	int map_user2[userCount];
-	user_index = 0;
-	update_index[0]=0;
-	int test_sum = 0;
-	for(int i=0; i<block_num; i++){
-		update_index[i+1] = update_index[i] + contain_index[i].size();
-		//cout<<update_index[i]<<" ";
-		for(int j=0; j<contain_index[i].size(); j++){
-			map_user2[contain_index[i][j]] = user_index;
-			user_index++;
-			//test_sum+=reorder_user[contain_index[i][j]].count;
-		}
-		//std::cout<<test_sum<<" ";
-	}
 
-	int new_index = 0;
   	for (int u = 0; u < userCount; u++) {
-		new_index = map_user[u];
-		//new_index = u;
-		trainMatrix.rows[new_index].setLength(user_no_repeat[new_index].size());
+		trainMatrix.rows[u].setLength(user_no_repeat[u].size());
 	}
-	//std::cout<<sumsum<<"\n";
   	for (int i = 0; i < itemCount; i++) {
     	trainMatrix.cols[i].setLength(item_no_repeat[i].size());
     }
   	for (int u = 0; u < userCount; u++) {
     	map<int, float>::iterator iter;
-		new_index = map_user[u];
-		//new_index = u;
-    	for(iter = user_no_repeat[new_index].begin(); iter != user_no_repeat[new_index].end(); iter++){
-       		trainMatrix.setValue(new_index, iter->first, iter->second );
+    	for(iter = user_no_repeat[u].begin(); iter != user_no_repeat[u].end(); iter++){
+       		trainMatrix.setValue(u, iter->first, iter->second );
        	}
 	}
 
@@ -293,12 +235,6 @@ int main(int argc, const char * argv[]) {
 	for (int u = 0; u < userCount; u++)
 		assert(u == testRatings[u].userId);
 
-	MF_fastALS fals(trainMatrix, testRatings, topK, threadNum, factors, maxIter, w0, alpha, reg, init_mean, init_stdev, showProgress, showLoss, userCount, itemCount, update_index);
-
-	std::cout << "Start building model" << std::endl;
-	fals.buildModel();
-  	float res = fals.Calculate_RMSE();
-  	std::cout<<"Evaluation loss: "<<res<<std::endl;
 
 	return 0;
 }

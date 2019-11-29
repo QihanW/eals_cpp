@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<session version="2" name="NewSession1.nvvp" hscale="1.0E-6" normalize="false">
+<timelineoptions enabletimerange="false" start="-1" end="-1" numsegmentsuvm="100" uvmisegmentenabled="true"/>
+<executable file="/home/qwang/eals/test/eals_cuda/eals_cpp/eals" profileonstart="true" concurrentkernels="true" apitrace="true" environmentprofiling="true" uvmprofiling="true" cpuprofiling="false" allocationsTracking="true" openaccprofiling="true" threadtracking="true" devicebuffersize="8" cdpbuffersize="8"><envs></envs><multiProcess type="0" rumMPS="false"/></executable>
+<expert><columnprops></columnprops>
+<columnorder><column kind="NAME"/><column kind="INVOCATIONS"/><column kind="START_TIME"/><column kind="DURATION"/><column kind="AVG_DURATION"/><column kind="GRID_SIZE"/><column kind="BLOCK_SIZE"/><column kind="REGS_PER_THREAD"/><column kind="STAT_SHARED_MEM"/><column kind="DYNA_SHARED_MEM"/><column kind="AVG_DYNA_SHARED_MEM"/><column kind="BYTE_SIZE"/><column kind="THROUGHPUT"/><column kind="EMPTY"/></columnorder>
+</expert>
+<analysis guided="true"><visitedstages><stage name="TIMELINE"/></visitedstages></analysis>
+<expertsystem current="INTRO"><visited><stage name="INTRO"/></visited></expertsystem>
+<vruler width="200"/>
+<hruler>
+</hruler>
+</session>

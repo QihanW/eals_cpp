@@ -1,0 +1,166 @@
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+
+Begin optimization report for: DenseVec::DenseVec(DenseVec *, float *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at DenseVec.cpp(17,2)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at DenseVec.cpp(17,2)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at DenseVec.cpp(17,2)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: DenseVec::DenseVec(DenseVec *const, float *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at DenseVec.cpp(17,2) inlined into DenseVec.cpp(13,11)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at DenseVec.cpp(17,2) inlined into DenseVec.cpp(13,11)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at DenseVec.cpp(17,2) inlined into DenseVec.cpp(13,11)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: DenseVec::DenseVec(DenseVec *, float *, bool)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at DenseVec.cpp(35,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at DenseVec.cpp(35,5)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at DenseVec.cpp(35,5)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: DenseVec::DenseVec(DenseVec *const, float *, bool)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at DenseVec.cpp(35,5) inlined into DenseVec.cpp(30,11)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at DenseVec.cpp(35,5) inlined into DenseVec.cpp(30,11)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at DenseVec.cpp(35,5) inlined into DenseVec.cpp(30,11)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: DenseVec::clone(DenseVec *, DenseVec *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at DenseVec.cpp(17,2) inlined into DenseVec.cpp(57,15)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at DenseVec.cpp(17,2) inlined into DenseVec.cpp(57,15)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at DenseVec.cpp(17,2) inlined into DenseVec.cpp(57,15)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: DenseVec::inner(DenseVec *, DenseVec *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at DenseVec.cpp(91,2)
+<Peeled loop for vectorization>
+LOOP END
+
+LOOP BEGIN at DenseVec.cpp(91,2)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at DenseVec.cpp(91,2)
+<Alternate Alignment Vectorized Loop>
+LOOP END
+
+LOOP BEGIN at DenseVec.cpp(91,2)
+<Remainder loop for vectorization>
+LOOP END
+===========================================================================
+
+Begin optimization report for: DenseVec::init(DenseVec *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at DenseVec.cpp(73,2)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between n._M_saved_available (1790:2) and n._M_saved_available (1792:6)
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/random.tcc(1804,20) inlined into DenseVec.cpp(74,21)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/random.tcc(3328,7) inlined into DenseVec.cpp(74,21)
+         remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+         remark #15346: vector dependence: assumed ANTI dependence between __tmp (3330:4) and __tmp (3331:4)
+      LOOP END
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/random.tcc(3328,7) inlined into DenseVec.cpp(74,21)
+         remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+         remark #15346: vector dependence: assumed ANTI dependence between e._M_x (332:2) and e._M_x (332:2)
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: DenseVec::init(DenseVec *, float, float)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at DenseVec.cpp(64,2)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between n._M_saved_available (1790:2) and n._M_saved_available (1792:6)
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/random.tcc(1804,20) inlined into DenseVec.cpp(65,20)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/random.tcc(3328,7) inlined into DenseVec.cpp(65,20)
+         remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+         remark #15346: vector dependence: assumed ANTI dependence between __tmp (3330:4) and __tmp (3331:4)
+      LOOP END
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/random.tcc(3328,7) inlined into DenseVec.cpp(65,20)
+         remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+         remark #15346: vector dependence: assumed ANTI dependence between e._M_x (332:2) and e._M_x (332:2)
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================

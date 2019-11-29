@@ -4,20 +4,20 @@
 #include "SparseVec.h"
 
 using namespace std;
-//typedef SparseVector<double> SpVec;
+//typedef SparseVector<float> SpVec;
 
 SparseVec::SparseVec() {
 	this->n = 0;
 	this->current = 0;
 	this->spv_in = new int[0];
-	this->spv_do = new double[0];
+	this->spv_do = new float[0];
 }
 
 SparseVec::SparseVec(int num) {
 	this->n = num;
 	this->current = 0;
 	this->spv_in = new int[num];
-	this->spv_do = new double[num];
+	this->spv_do = new float[num];
 }
 /*
 SparseVec::SparseVec(SpVec sv) {
@@ -25,7 +25,7 @@ SparseVec::SparseVec(SpVec sv) {
 	this->vector = sv;
 }*/
 
-void SparseVec::setValue(int i, double value) {
+void SparseVec::setValue(int i, float value) {
   *(this->spv_in + this->current) = i;
   *(this->spv_do + this->current) = value;
   this->current++;
@@ -35,14 +35,14 @@ void SparseVec::setValue(int i, double value) {
 void SparseVec::setVector(SparseVec newVector) {
 	this->n = newVector.n;
 	this->spv_in = new int[this->n];
-	this->spv_do = new double[this->n];
+	this->spv_do = new float[this->n];
 	for(int i=0; i<this->n; i++){
     this->spv_in[i] = newVector.spv_in[i];
     this->spv_do[i] = newVector.spv_do[i];
   }
 }
 
-double SparseVec::getValue(int i){
+float SparseVec::getValue(int i){
 	for(int j=0; j<this->n; j++){
     if(this->spv_in[j] == i)
       return this->spv_do[j];
@@ -53,7 +53,7 @@ double SparseVec::getValue(int i){
 void SparseVec::setLength(int num) {
 	this->n = num;
 	this->spv_in = new int[num];
-	this->spv_do = new double[num];
+	this->spv_do = new float[num];
 }
 
 int SparseVec::itemCount() {

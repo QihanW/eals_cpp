@@ -1,0 +1,60 @@
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+
+Begin optimization report for: SparseMat::SparseMat(SparseMat *, int, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at SparseMat.cpp(25,29)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization
+LOOP END
+
+LOOP BEGIN at SparseMat.cpp(26,29)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization
+LOOP END
+===========================================================================
+
+Begin optimization report for: SparseMat::SparseMat(SparseMat *const, int, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at SparseMat.cpp(25,29) inlined into SparseMat.cpp(22,12)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization
+LOOP END
+
+LOOP BEGIN at SparseMat.cpp(26,29) inlined into SparseMat.cpp(22,12)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization
+LOOP END
+===========================================================================
+
+Begin optimization report for: SparseMat::setSize(SparseMat *, int, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at SparseMat.cpp(73,30)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization
+LOOP END
+
+LOOP BEGIN at SparseMat.cpp(74,30)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization
+LOOP END
+===========================================================================
+
+Begin optimization report for: SparseMat::itemCount(SparseMat *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at SparseMat.cpp(101,4)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at SparseMat.cpp(106,4)
+   remark #15523: loop was not vectorized: loop control variable j was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+===========================================================================

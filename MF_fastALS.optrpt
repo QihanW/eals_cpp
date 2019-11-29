@@ -1,0 +1,959 @@
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+
+Begin optimization report for: MF_fastALS::MF_fastALS(MF_fastALS *, SparseMat, std::vector<Rating, std::allocator<Rating>> *, int, int, int, int, float, float, float, float, float, bool, bool, int, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(32,13)
+   remark #15301: MATERIALIZED LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(61,2)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(67,2)
+<Peeled loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(67,2)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(67,2)
+<Remainder loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(74,2)
+<Peeled loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(74,2)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(74,2)
+<Alternate Alignment Vectorized Loop>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(74,2)
+<Remainder loop for vectorization>
+   remark #15301: REMAINDER LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(74,2)
+<Remainder loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(80,2)
+   remark #15523: loop was not vectorized: loop control variable u was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(83,3)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(745,5) inlined into MF_fastALS.cpp(93,2)
+   remark #15523: loop was not vectorized: loop control variable f was found, but loop iteration count cannot be computed before executing the loop
+
+   LOOP BEGIN at MF_fastALS.cpp(746,7) inlined into MF_fastALS.cpp(93,2)
+      remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ MF_fastALS.cpp(749,20) ]
+
+      LOOP BEGIN at MF_fastALS.cpp(748,9) inlined into MF_fastALS.cpp(93,2)
+         remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::MF_fastALS(MF_fastALS *const, SparseMat, std::vector<Rating, std::allocator<Rating>> *, int, int, int, int, float, float, float, float, float, bool, bool, int, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(32,13) inlined into MF_fastALS.cpp(32,13)
+   remark #15301: MATERIALIZED LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(61,2) inlined into MF_fastALS.cpp(32,13)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(67,2) inlined into MF_fastALS.cpp(32,13)
+<Peeled loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(67,2) inlined into MF_fastALS.cpp(32,13)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(67,2) inlined into MF_fastALS.cpp(32,13)
+<Remainder loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(74,2) inlined into MF_fastALS.cpp(32,13)
+<Peeled loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(74,2) inlined into MF_fastALS.cpp(32,13)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(74,2) inlined into MF_fastALS.cpp(32,13)
+<Alternate Alignment Vectorized Loop>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(74,2) inlined into MF_fastALS.cpp(32,13)
+<Remainder loop for vectorization>
+   remark #15301: REMAINDER LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(74,2) inlined into MF_fastALS.cpp(32,13)
+<Remainder loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(80,2) inlined into MF_fastALS.cpp(32,13)
+   remark #15523: loop was not vectorized: loop control variable u was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(83,3) inlined into MF_fastALS.cpp(32,13)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(745,5) inlined into MF_fastALS.cpp(32,13)
+   remark #15523: loop was not vectorized: loop control variable f was found, but loop iteration count cannot be computed before executing the loop
+
+   LOOP BEGIN at MF_fastALS.cpp(746,7) inlined into MF_fastALS.cpp(32,13)
+      remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ MF_fastALS.cpp(749,20) ]
+
+      LOOP BEGIN at MF_fastALS.cpp(748,9) inlined into MF_fastALS.cpp(32,13)
+         remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::setTrain(MF_fastALS *, SparseMat)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(101,2)
+   remark #15523: loop was not vectorized: loop control variable u was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(104,3)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::setUV(MF_fastALS *, DenseMat, DenseMat)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(745,5) inlined into MF_fastALS.cpp(112,2)
+   remark #15523: loop was not vectorized: loop control variable f was found, but loop iteration count cannot be computed before executing the loop
+
+   LOOP BEGIN at MF_fastALS.cpp(746,7) inlined into MF_fastALS.cpp(112,2)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+      remark #15346: vector dependence: assumed OUTPUT dependence between call:DenseMat::get(DenseMat *, int, int) (749:20) and call:DenseMat::set(DenseMat *, int, int, float) (751:12)
+
+      LOOP BEGIN at MF_fastALS.cpp(748,9) inlined into MF_fastALS.cpp(112,2)
+         remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::buildModel(MF_fastALS *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(167,5)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+   LOOP BEGIN at MF_fastALS.cpp(168,8)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(190,5)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between this->matrix[i][j] (191:6) and v_clone.matrix[i][j] (192:7)
+
+   LOOP BEGIN at MF_fastALS.cpp(191,6)
+      remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
+
+      LOOP BEGIN at MF_fastALS.cpp(191,6)
+      <Multiversioned v2>
+         remark #15304: loop was not vectorized: non-vectorizable loop instance from multiversioning
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(191,6)
+      <Remainder, Multiversioned v2>
+      LOOP END
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(208,3)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+   LOOP BEGIN at MF_fastALS.cpp(209,4)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(256,2) inlined into MF_fastALS.cpp(226,15)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(263,3) inlined into MF_fastALS.cpp(226,15)
+      remark #15542: loop was not vectorized: inner loop was already vectorized
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(226,15)
+      <Peeled loop for vectorization>
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(226,15)
+         remark #15300: LOOP WAS VECTORIZED
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(226,15)
+      <Alternate Alignment Vectorized Loop>
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(226,15)
+      <Remainder loop for vectorization>
+      LOOP END
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(138,3)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between this->matrix[i][j] (139:7) and u_clone (140:9)
+
+   LOOP BEGIN at MF_fastALS.cpp(139,7)
+      remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
+
+      LOOP BEGIN at MF_fastALS.cpp(139,7)
+      <Multiversioned v2>
+         remark #15304: loop was not vectorized: non-vectorizable loop instance from multiversioning
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(139,7)
+      <Remainder, Multiversioned v2>
+      LOOP END
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(146,3)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(170,10)
+   remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(198,3)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(211,6)
+   remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+LOOP END
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at MF_fastALS.cpp(132,2)
+   remark #15333: loop was not vectorized: exception handling for a call prevents vectorization   [ MF_fastALS.cpp(273,11) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::update_user_thread(MF_fastALS *, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(345,5)
+<Distributed chunk1>
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(347,29)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(347,29)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(347,29)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(347,29)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(345,5)
+<Distributed chunk2>
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(345,5)
+   <Distributed chunk2>
+      remark #15301: PARTIAL LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(345,5)
+   <Remainder loop for vectorization, Distributed chunk2>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(345,5)
+<Distributed chunk3>
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(345,5)
+   <Distributed chunk3>
+      remark #15301: PARTIAL LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(345,5)
+   <Remainder loop for vectorization, Distributed chunk3>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(356,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(365,7)
+      remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(365,7)
+   <Remainder>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(370,7)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(370,7)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(370,7)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(370,7)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(370,7)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(370,7)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(370,7)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(370,7)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(380,7)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(380,7)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(380,7)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(395,7)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(395,7)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(395,7)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(395,7)
+   <Remainder loop for vectorization>
+      remark #15301: REMAINDER LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(395,7)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::update_item_thread(MF_fastALS *, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(443,5)
+<Distributed chunk1>
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(445,29)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(445,29)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(445,29)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(445,29)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(443,5)
+<Distributed chunk2>
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(443,5)
+   <Distributed chunk2>
+      remark #15301: PARTIAL LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(443,5)
+   <Remainder loop for vectorization, Distributed chunk2>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(443,5)
+<Distributed chunk3>
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(443,5)
+   <Distributed chunk3>
+      remark #15301: PARTIAL LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(443,5)
+   <Remainder loop for vectorization, Distributed chunk3>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(455,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(461,7)
+      remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(461,7)
+   <Remainder>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(488,7)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(488,7)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(488,7)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(488,7)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(488,7)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(488,7)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(488,7)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(488,7)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(522,7)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(522,7)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(522,7)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(554,7)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(554,7)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(554,7)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(554,7)
+   <Remainder loop for vectorization>
+      remark #15301: REMAINDER LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(554,7)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::runOneIteration(MF_fastALS *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(233,2)
+   remark #15523: loop was not vectorized: loop control variable u was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(238,2)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::showLoss(MF_fastALS *, int, float, float)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(256,2) inlined into MF_fastALS.cpp(245,19)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(263,3) inlined into MF_fastALS.cpp(245,19)
+      remark #15542: loop was not vectorized: inner loop was already vectorized
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(245,19)
+      <Peeled loop for vectorization>
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(245,19)
+         remark #15300: LOOP WAS VECTORIZED
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(245,19)
+      <Alternate Alignment Vectorized Loop>
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(245,19)
+      <Remainder loop for vectorization>
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::loss(MF_fastALS *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(256,2)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(263,3)
+      remark #15542: loop was not vectorized: inner loop was already vectorized
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(265,17)
+      <Peeled loop for vectorization>
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(265,17)
+         remark #15300: LOOP WAS VECTORIZED
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(265,17)
+      <Alternate Alignment Vectorized Loop>
+      LOOP END
+
+      LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(265,17)
+      <Remainder loop for vectorization>
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::predict(MF_fastALS *, int, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(287,2)
+<Peeled loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(287,2)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(287,2)
+<Alternate Alignment Vectorized Loop>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(287,2)
+<Remainder loop for vectorization>
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::updateModel(MF_fastALS *, int, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(301,7)
+   remark #15523: loop was not vectorized: loop control variable f was found, but loop iteration count cannot be computed before executing the loop
+
+   LOOP BEGIN at MF_fastALS.cpp(302,9)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   LOOP END
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(310,5)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::getHitRatio(MF_fastALS *, std::vector<int, std::allocator<int>> *, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(757,21)
+   remark #15523: loop was not vectorized: loop control variable Ub2_V.Ub2_V was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::getNDCG(MF_fastALS *, std::vector<int, std::allocator<int>> *, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(763,34)
+   remark #15520: loop was not vectorized: loop with multiple exits cannot be vectorized unless it meets search loop idiom criteria   [ MF_fastALS.cpp(766,25) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::getPrecision(MF_fastALS *, std::vector<int, std::allocator<int>> *, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(771,34)
+   remark #15520: loop was not vectorized: loop with multiple exits cannot be vectorized unless it meets search loop idiom criteria   [ MF_fastALS.cpp(774,27) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::evaluate_for_user(std::vector<float, std::allocator<float>> *, MF_fastALS *, int, int, int)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7) inlined into MF_fastALS.cpp(782,31)
+   remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(787,16)
+<Peeled loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(787,16)
+   remark #15300: LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(787,16)
+<Alternate Alignment Vectorized Loop>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(787,16)
+<Remainder loop for vectorization>
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(789,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(790,21)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(790,21)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(790,21)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(790,21)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(2035,7) inlined into MF_fastALS.cpp(791,47)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_uninitialized.h(526,8) inlined into MF_fastALS.cpp(801,45)
+   remark #15527: loop was not vectorized: function call to ?1memset cannot be vectorized   [ /usr/include/c++/7.4.0/bits/stl_construct.h(75,7) ]
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(811,26)
+   remark #15523: loop was not vectorized: loop control variable Uba_V.Uba_V was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(757,21) inlined into MF_fastALS.cpp(817,17)
+   remark #15523: loop was not vectorized: loop control variable Ub2_V.Ub2_V was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(763,34) inlined into MF_fastALS.cpp(818,17)
+   remark #15520: loop was not vectorized: loop with multiple exits cannot be vectorized unless it meets search loop idiom criteria   [ MF_fastALS.cpp(765,7) ]
+LOOP END
+
+LOOP BEGIN at MF_fastALS.cpp(771,34) inlined into MF_fastALS.cpp(819,17)
+   remark #15520: loop was not vectorized: loop with multiple exits cannot be vectorized unless it meets search loop idiom criteria   [ MF_fastALS.cpp(773,7) ]
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into MF_fastALS.cpp(820,5)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into MF_fastALS.cpp(820,5)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into MF_fastALS.cpp(820,5)
+         remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+         LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into MF_fastALS.cpp(820,5)
+            remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+         LOOP END
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_type, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type, std::_Select1st<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type>, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_compare, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::_Pair_alloc_type>::_M_erase(std::_Rb_tree<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_type, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type, std::_Select1st<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type>, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_compare, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::_Pair_alloc_type> *, std::_Rb_tree<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_type, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type, std::_Select1st<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::value_type>, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::key_compare, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::_Pair_alloc_type>::_Link_type)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_tree.h(1857,4)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_tree.h(1857,4)
+         remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+         LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_tree.h(1857,4)
+            remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+         LOOP END
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::~map(std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_map.h(295,7)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_map.h(295,7)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+      LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_map.h(295,7)
+         remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+         LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(1854,7) inlined into /usr/include/c++/7.4.0/bits/stl_map.h(295,7)
+            remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+         LOOP END
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::__partial_sort_copy<std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::iterator, std::vector<std::pair<int, float>, std::allocator<std::pair<int, float>>>::iterator, __gnu_cxx::__ops::_Iter_comp_iter<struct lambda [] type at line 123516, col. 26>>(std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::iterator, std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::iterator, std::vector<std::pair<int, float>, std::allocator<std::pair<int, float>>>::iterator, std::vector<std::pair<int, float>, std::allocator<std::pair<int, float>>>::iterator, __gnu_cxx::__ops::_Iter_comp_iter<struct lambda [] type at line 123516, col. 26>)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1696,7)
+   remark #15523: loop was not vectorized: loop control variable __result_real_last._M_current was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(338,46) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1704,7)
+   remark #15522: loop was not vectorized: loop control flow is too complex. Try using canonical loop form from OpenMP specification
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(219,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1704,7)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(133,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1704,7)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algo.h(1704,7)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(219,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1708,6)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(133,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1708,6)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(405,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1714,7)
+   remark #15523: loop was not vectorized: loop control variable __last._M_current was found, but loop iteration count cannot be computed before executing the loop
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(219,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1714,7)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_heap.h(133,7) inlined into /usr/include/c++/7.4.0/bits/stl_algo.h(1714,7)
+      remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::update_user_SU(MF_fastALS *, float *, float *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(411,3)
+   remark #15523: loop was not vectorized: loop control variable f was found, but loop iteration count cannot be computed before executing the loop
+
+   LOOP BEGIN at MF_fastALS.cpp(413,7)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::update_item_SV(MF_fastALS *, int, float *, float *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(572,3)
+   remark #15523: loop was not vectorized: loop control variable f was found, but loop iteration count cannot be computed before executing the loop
+
+   LOOP BEGIN at MF_fastALS.cpp(574,5)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+      remark #15346: vector dependence: assumed ANTI dependence between this->Wi (576:41) and call:DenseMat::set(DenseMat *, int, int, float) (578:12)
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::Calculate_RMSE(MF_fastALS *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(826,6)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(835,19)
+   <Peeled loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(835,19)
+      remark #15300: LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(835,19)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at MF_fastALS.cpp(287,2) inlined into MF_fastALS.cpp(835,19)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>>::insert<std::pair<int, float>>(std::map<int, float, std::less<int>, std::allocator<std::pair<const int, float>>> *, std::pair<int, float> &&)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_tree.h(2035,7) inlined into /usr/include/c++/7.4.0/bits/stl_map.h(810,34)
+   remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::__fill_n_a<std::_Vector_base<float, std::allocator<float>>::pointer, std::vector<float, std::allocator<float>>::size_type, std::iterator_traits<std::_Vector_base<float, std::allocator<float>>::pointer>::value_type>(std::_Vector_base<float, std::allocator<float>>::pointer, std::vector<float, std::allocator<float>>::size_type, const std::iterator_traits<std::_Vector_base<float, std::allocator<float>>::pointer>::value_type &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7)
+   remark #15315: loop was not vectorized: estimated number of iterations (3) is insufficient for vectorization
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/7.4.0/bits/stl_algobase.h(752,7)
+<Remainder>
+LOOP END
+===========================================================================
+
+Begin optimization report for: MF_fastALS::initS(MF_fastALS *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at MF_fastALS.cpp(745,5)
+   remark #15523: loop was not vectorized: loop control variable f was found, but loop iteration count cannot be computed before executing the loop
+
+   LOOP BEGIN at MF_fastALS.cpp(746,7)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+      remark #15346: vector dependence: assumed OUTPUT dependence between call:DenseMat::get(DenseMat *, int, int) (749:20) and call:DenseMat::set(DenseMat *, int, int, float) (751:12)
+
+      LOOP BEGIN at MF_fastALS.cpp(748,9)
+         remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
