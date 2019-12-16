@@ -185,7 +185,7 @@ int main(int argc, const char * argv[]) {
 		}
 	}
 	sort(reorder_user, reorder_user+userCount, compareUser);
-	sort(reorder_item, reorder_item+itemCount, compareitem);
+	//sort(reorder_item, reorder_item+itemCount, compareitem);
 	for(int i=0; i<userCount; i++){
 		map_user[reorder_user[i].index] = i;
 	}	
